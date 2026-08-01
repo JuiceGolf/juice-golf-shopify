@@ -1,0 +1,49 @@
+{%- comment -%}
+  Shared "design your jersey" step: color swatches + optional logo upload,
+  with a live placeholder-art preview (tinted SVG shirt outline + logo overlay).
+  Rendered inside the roster-builder form, above the roster rows — the chosen
+  color/logo apply to the whole team's order, not per player.
+  Params: color_option (required), color_label, logo_label
+{%- endcomment -%}
+
+{%- liquid
+  assign color_label = color_label | default: 'Color'
+  assign logo_label = logo_label | default: 'Team logo (optional)'
+  assign first_color = color_option.values | first
+-%}
+
+<div class="shirt-designer" data-shirt-designer style="--shirt-color: {{ first_color | escape }};">
+  <div class="shirt-designer__preview" aria-hidden="true">
+    <svg class="shirt-designer__svg" viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg">
+      <path d="M55,15 L15,45 L35,80 L35,205 L165,205 L165,80 L185,45 L145,15 L100,55 Z" />
+    </svg>
+    <img class="shirt-designer__logo" data-shirt-logo-preview hidden alt="" width="200" height="200">
+  </div>
+
+  <div class="shirt-designer__controls">
+    <div class="field shirt-designer__field">
+      <label class="shirt-designer__label" id="ShirtColorLabel">{{ color_label }}</label>
+      <div class="shirt-designer__swatches" role="radiogroup" aria-labelledby="ShirtColorLabel" data-shirt-color-swatches>
+        {%- for value in color_option.values -%}
+          <button
+            type="button"
+            class="shirt-designer__swatch {% if forloop.first %}is-active{% endif %}"
+            style="background-color: {{ value | escape }};"
+            data-shirt-color-swatch
+            data-value="{{ value | escape }}"
+            role="radio"
+            aria-checked="{% if forloop.first %}true{% else %}false{% endif %}"
+            aria-label="{{ value | escape }}"
+          ></button>
+        {%- endfor -%}
+      </div>
+      <p class="text-muted shirt-designer__selected-color" data-shirt-color-name>{{ first_color }}</p>
+      <input type="hidden" name="properties[{{ color_label }}]" value="{{ first_color | escape }}" data-shirt-color-input>
+    </div>
+
+    <div class="field shirt-designer__field">
+      <label class="shirt-designer__label" for="ShirtLogoInput">{{ logo_label }}</label>
+      <input type="file" id="ShirtLogoInput" class="field__input" name="properties[{{ logo_label }}]" accept="image/png,image/jpeg,image/svg+xml" data-shirt-logo-input>
+    </div>
+  </div>
+</div>

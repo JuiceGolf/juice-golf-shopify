@@ -33,7 +33,12 @@
       "Bash(curl -s -L \"http://127.0.0.1:9292/cart\" -o /tmp/cart.html -w \"cart HTTP %{http_code}\\\\n\")",
       "Bash(curl -s -L -o /tmp/search.html -w \"search HTTP %{http_code}\\\\n\" \"http://127.0.0.1:9292/search?q=test\")",
       "Bash(npx --yes @shopify/cli theme check --path ./theme)",
-      "Bash(git add *)"
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "Bash(node --check theme/assets/global.js)",
+      "Bash(curl -s -L \"http://127.0.0.1:9292/\" -o /tmp/home5.html -w \"home HTTP %{http_code}\\\\n\")",
+      "Bash(curl -s -L \"http://127.0.0.1:9292/cart\" -o /tmp/cart5.html -w \"cart HTTP %{http_code}\\\\n\")"
     ]
   }
 }

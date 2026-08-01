@@ -1,13 +1,14 @@
 {%- comment -%}
   One roster row: name, number, size. Used both for the live first row and
-  cloned (via <template>) by JS for additional players.
-  Params: product (required), size_option (required), name_label, number_label
+  cloned (via <template>) by JS for additional players. The size select holds
+  plain option values — actual variant resolution (which may also depend on a
+  shared Color choice from the shirt designer) happens in JS.
+  Params: size_option (required), name_label, number_label
 {%- endcomment -%}
 
 {%- liquid
   assign name_label = name_label | default: 'Player name'
   assign number_label = number_label | default: 'Number'
-  assign size_index = size_option.position | minus: 1
 -%}
 
 <div class="roster-builder__row" data-roster-row>
@@ -21,23 +22,12 @@
   </div>
   <div class="field roster-builder__field roster-builder__field--size">
     <label class="visually-hidden">{{ size_option.name }}</label>
-    <select class="field__input" name="id" data-roster-size>
+    <select class="field__input" data-roster-size>
       {%- for value in size_option.values -%}
-        {%- liquid
-          assign matched_variant = null
-          for variant in product.variants
-            if variant.options[size_index] == value
-              assign matched_variant = variant
-            endif
-          endfor
-        -%}
-        <option value="{{ matched_variant.id }}" data-price="{{ matched_variant.price }}" {% unless matched_variant.available %}disabled{% endunless %}>
-          {{ value }}{% unless matched_variant.available %} — Sold out{% endunless %}
-        </option>
+        <option value="{{ value | escape }}">{{ value }}</option>
       {%- endfor -%}
     </select>
   </div>
-  <input type="hidden" name="quantity" value="1">
   <button type="button" class="roster-builder__remove" data-roster-remove aria-label="Remove player">
     {% render 'icon', name: 'close' %}
   </button>

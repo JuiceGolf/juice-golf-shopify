@@ -154,6 +154,18 @@
     });
   }
 
+  /**
+   * Finds the variant matching a set of { optionPosition: value } constraints,
+   * e.g. { 1: 'Medium', 2: 'Red' } for a Size/Color product. Shared by the
+   * standard variant picker and the roster builder.
+   */
+  function findVariant(variants, optionValuesByPosition) {
+    const positions = Object.keys(optionValuesByPosition);
+    return variants.find((variant) => {
+      return positions.every((position) => variant['option' + position] === optionValuesByPosition[position]);
+    });
+  }
+
   /* ----------------------------------------------------------------
      Product variant picker
      ---------------------------------------------------------------- */
@@ -180,18 +192,12 @@
       const buttonText = submitButton ? submitButton.querySelector('[data-add-to-cart-text]') : null;
       const priceWrapper = section.querySelector('#ProductPrice');
 
-      function currentSelection() {
-        return selects
-          .sort((a, b) => Number(a.dataset.optionPosition) - Number(b.dataset.optionPosition))
-          .map((select) => select.value);
-      }
-
       function findMatchingVariant() {
-        const selection = currentSelection();
-        return variants.find((variant) => {
-          const options = [variant.option1, variant.option2, variant.option3].filter((o) => o !== null);
-          return options.every((value, index) => value === selection[index]);
+        const optionValuesByPosition = {};
+        selects.forEach((select) => {
+          optionValuesByPosition[select.dataset.optionPosition] = select.value;
         });
+        return findVariant(variants, optionValuesByPosition);
       }
 
       function render() {
@@ -274,20 +280,80 @@
       const subtotalEl = wrapper.querySelector('[data-roster-subtotal]');
       const submitButton = wrapper.querySelector('[data-roster-submit]');
       const submitText = wrapper.querySelector('[data-roster-submit-text]');
+      const variantsEl = wrapper.querySelector('[data-roster-variants]');
       if (!form || !rowsContainer || !template) return;
 
-      const basePrice = Number(wrapper.dataset.productPrice) || 0;
+      let variants = [];
+      if (variantsEl) {
+        try {
+          variants = JSON.parse(variantsEl.textContent);
+        } catch (error) {
+          variants = [];
+        }
+      }
 
-      function propertyName(input) {
-        const match = /^properties\[(.+)\]$/.exec(input.name || '');
-        return match ? match[1] : input.name;
+      const basePrice = Number(wrapper.dataset.productPrice) || 0;
+      const sizePosition = form.dataset.sizePosition;
+      const colorPosition = form.dataset.colorPosition; // undefined when shirt design is off
+
+      /* -- shirt designer (color swatches + logo upload + live preview) -- */
+      const designer = wrapper.querySelector('[data-shirt-designer]');
+      let selectedColor = null;
+      let logoFile = null;
+      let logoObjectUrl = null;
+
+      if (designer) {
+        const swatches = Array.from(designer.querySelectorAll('[data-shirt-color-swatch]'));
+        const colorInput = designer.querySelector('[data-shirt-color-input]');
+        const colorNameEl = designer.querySelector('[data-shirt-color-name]');
+        const logoInput = designer.querySelector('[data-shirt-logo-input]');
+        const logoPreview = designer.querySelector('[data-shirt-logo-preview]');
+
+        if (swatches.length > 0) selectedColor = swatches[0].dataset.value;
+
+        swatches.forEach((swatch) => {
+          swatch.addEventListener('click', () => {
+            selectedColor = swatch.dataset.value;
+            swatches.forEach((s) => {
+              const active = s === swatch;
+              s.classList.toggle('is-active', active);
+              s.setAttribute('aria-checked', String(active));
+            });
+            designer.style.setProperty('--shirt-color', selectedColor);
+            if (colorInput) colorInput.value = selectedColor;
+            if (colorNameEl) colorNameEl.textContent = selectedColor;
+            updateSubtotal();
+          });
+        });
+
+        if (logoInput) {
+          logoInput.addEventListener('change', () => {
+            logoFile = logoInput.files && logoInput.files[0] ? logoInput.files[0] : null;
+            if (logoObjectUrl) URL.revokeObjectURL(logoObjectUrl);
+            logoObjectUrl = null;
+            if (logoFile && logoPreview) {
+              logoObjectUrl = URL.createObjectURL(logoFile);
+              logoPreview.src = logoObjectUrl;
+              logoPreview.hidden = false;
+            } else if (logoPreview) {
+              logoPreview.hidden = true;
+              logoPreview.removeAttribute('src');
+            }
+          });
+        }
+      }
+
+      function resolveVariant(sizeValue) {
+        const optionValuesByPosition = {};
+        if (sizePosition) optionValuesByPosition[sizePosition] = sizeValue;
+        if (colorPosition && selectedColor) optionValuesByPosition[colorPosition] = selectedColor;
+        return findVariant(variants, optionValuesByPosition);
       }
 
       function rowPrice(row) {
         const select = row.querySelector('[data-roster-size]');
-        const selected = select && select.options[select.selectedIndex];
-        const price = selected ? Number(selected.dataset.price) : NaN;
-        return Number.isFinite(price) ? price : basePrice;
+        const variant = select ? resolveVariant(select.value) : null;
+        return variant ? variant.price : basePrice;
       }
 
       function updateSubtotal() {
@@ -326,13 +392,38 @@
         });
       }
 
+      /**
+       * Adds one player as its own /cart/add multipart request (not the
+       * batched /cart/add.js JSON endpoint) because file-upload properties
+       * (the team logo) only work through a classic form-encoded post.
+       */
+      function addPlayer(player) {
+        const formData = new FormData();
+        formData.append('id', String(player.variant.id));
+        formData.append('quantity', '1');
+        if (player.nameInput) formData.append(player.nameInput.name, player.nameInput.value.trim());
+        if (player.numberInput && player.numberInput.value.trim()) {
+          formData.append(player.numberInput.name, player.numberInput.value.trim());
+        }
+        if (designer) {
+          const colorInput = designer.querySelector('[data-shirt-color-input]');
+          if (colorInput && colorInput.value) formData.append(colorInput.name, colorInput.value);
+          const logoInput = designer.querySelector('[data-shirt-logo-input]');
+          if (logoInput && logoFile) formData.append(logoInput.name, logoFile);
+        }
+
+        return fetch(form.action, { method: 'POST', body: formData, headers: { Accept: 'application/json' } }).then((res) =>
+          res.json()
+        );
+      }
+
       form.addEventListener('submit', (event) => {
         event.preventDefault();
         event.stopPropagation();
 
         const originalSubmitText = submitText ? submitText.textContent : null;
         const rows = Array.from(rowsContainer.querySelectorAll('[data-roster-row]'));
-        const items = [];
+        const players = [];
 
         rows.forEach((row) => {
           const nameInput = row.querySelector('[data-roster-name]');
@@ -341,17 +432,19 @@
           const name = nameInput ? nameInput.value.trim() : '';
           if (!name) return; // skip empty rows
 
-          const properties = {};
-          if (nameInput) properties[propertyName(nameInput)] = name;
-          if (numberInput && numberInput.value.trim()) {
-            properties[propertyName(numberInput)] = numberInput.value.trim();
-          }
-
-          items.push({ id: select ? Number(select.value) : null, quantity: 1, properties });
+          players.push({ nameInput, numberInput, variant: select ? resolveVariant(select.value) : null });
         });
 
-        if (items.length === 0) {
+        if (players.length === 0) {
           if (submitText) submitText.textContent = 'Add at least one player';
+          window.setTimeout(() => {
+            if (submitText && originalSubmitText) submitText.textContent = originalSubmitText;
+          }, 2500);
+          return;
+        }
+
+        if (players.some((player) => !player.variant)) {
+          if (submitText) submitText.textContent = 'That size/color isn’t available';
           window.setTimeout(() => {
             if (submitText && originalSubmitText) submitText.textContent = originalSubmitText;
           }, 2500);
@@ -361,23 +454,29 @@
         if (submitButton) submitButton.disabled = true;
         if (submitText) submitText.textContent = 'Adding…';
 
-        fetch('/cart/add.js', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-          body: JSON.stringify({ items: items }),
-        })
-          .then((res) => res.json())
-          .then((result) => {
-            if (result.status) {
-              throw new Error(result.description || 'Could not add this team to your cart.');
-            }
-            return fetch('/cart.js')
+        // Sequential, not Promise.all — avoids concurrent-write races against
+        // the same cart session. Note: if a later player fails, earlier ones
+        // in this loop have already been added to the cart.
+        players
+          .reduce(
+            (promise, player) =>
+              promise.then(() =>
+                addPlayer(player).then((result) => {
+                  if (result && result.status) {
+                    throw new Error(result.description || 'Could not add this team to your cart.');
+                  }
+                })
+              ),
+            Promise.resolve()
+          )
+          .then(() =>
+            fetch('/cart.js')
               .then((res) => res.json())
               .then((cart) => {
                 updateCartCount(cart.item_count);
                 return refreshCartDrawer();
-              });
-          })
+              })
+          )
           .then(() => {
             const drawer = document.querySelector('cart-drawer');
             if (drawer && drawer.open) drawer.open();

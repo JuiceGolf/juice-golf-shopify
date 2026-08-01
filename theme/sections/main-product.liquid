@@ -78,7 +78,10 @@
             name_label: section.settings.roster_name_label,
             number_label: section.settings.roster_number_label,
             add_label: section.settings.roster_add_button_label,
-            submit_label: section.settings.roster_submit_label
+            submit_label: section.settings.roster_submit_label,
+            enable_shirt_design: section.settings.enable_shirt_design,
+            color_label: section.settings.shirt_color_label,
+            logo_label: section.settings.shirt_logo_label
           %}
         {%- else -%}
           {%- form 'product', product, id: 'ProductForm', class: 'product-form' -%}
@@ -349,6 +352,92 @@
     justify-content: space-between;
     font-weight: 600;
   }
+
+  .shirt-designer {
+    display: grid;
+    grid-template-columns: 12rem 1fr;
+    gap: 1.5rem;
+    align-items: start;
+    padding-bottom: 1.25rem;
+    margin-bottom: 0.25rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  @media screen and (max-width: 479px) {
+    .shirt-designer {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .shirt-designer__preview {
+    position: relative;
+    aspect-ratio: 200 / 220;
+    background: var(--color-background-alt);
+    border-radius: var(--input-radius);
+    overflow: hidden;
+  }
+
+  .shirt-designer__svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .shirt-designer__svg path {
+    fill: var(--shirt-color, var(--color-background-alt));
+    transition: fill 150ms ease;
+  }
+
+  .shirt-designer__logo {
+    position: absolute;
+    top: 32%;
+    left: 50%;
+    width: 28%;
+    transform: translateX(-50%);
+    object-fit: contain;
+    pointer-events: none;
+  }
+
+  .shirt-designer__controls {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .shirt-designer__label {
+    display: block;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 0.5rem;
+  }
+
+  .shirt-designer__swatches {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+
+  .shirt-designer__swatch {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    border: 2px solid var(--color-border);
+    padding: 0;
+    cursor: pointer;
+  }
+
+  .shirt-designer__swatch.is-active {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 2px var(--color-background), 0 0 0 4px var(--color-primary);
+  }
+
+  .shirt-designer__selected-color {
+    margin-top: 0.5rem;
+    font-size: 0.8125rem;
+  }
 {% endstylesheet %}
 
 {% schema %}
@@ -385,6 +474,25 @@
       "id": "roster_submit_label",
       "label": "Roster — submit button label",
       "default": "Add whole team to cart"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_shirt_design",
+      "label": "Enable shirt design (color + logo preview)",
+      "info": "Adds a color picker, logo upload, and live preview above the roster. Requires the product to also have a \"Color\" option in addition to \"Size\".",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "shirt_color_label",
+      "label": "Shirt design — color field label",
+      "default": "Color"
+    },
+    {
+      "type": "text",
+      "id": "shirt_logo_label",
+      "label": "Shirt design — logo field label",
+      "default": "Team logo (optional)"
     }
   ],
   "blocks": [

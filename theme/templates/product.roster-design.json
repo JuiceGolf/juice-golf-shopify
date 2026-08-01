@@ -1,0 +1,29 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "blocks": {
+        "accordion-1": {
+          "type": "accordion",
+          "settings": {
+            "heading": "Sizing & fit",
+            "content": "<p>Add sizing and fit details here.</p>"
+          }
+        },
+        "accordion-2": {
+          "type": "accordion",
+          "settings": {
+            "heading": "Shipping & production",
+            "content": "<p>Custom team apparel goes through design review before production. See the Shipping page for current timelines.</p>"
+          }
+        }
+      },
+      "block_order": ["accordion-1", "accordion-2"],
+      "settings": {
+        "enable_roster_builder": true,
+        "enable_shirt_design": true
+      }
+    }
+  },
+  "order": ["main"]
+}
