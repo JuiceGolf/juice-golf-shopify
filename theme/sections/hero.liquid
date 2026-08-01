@@ -1,0 +1,341 @@
+<section class="hero {% if section.settings.image == blank %}hero--no-image{% endif %}" data-section-id="{{ section.id }}">
+  {%- if section.settings.image != blank -%}
+    <div class="hero__media">
+      <img
+        class="hero__media-image"
+        src="{{ section.settings.image | image_url: width: 2000 }}"
+        srcset="{{ section.settings.image | image_url: width: 800 }} 800w, {{ section.settings.image | image_url: width: 1400 }} 1400w, {{ section.settings.image | image_url: width: 2000 }} 2000w"
+        sizes="100vw"
+        alt="{{ section.settings.image.alt | default: section.settings.heading | escape }}"
+        width="{{ section.settings.image.width }}"
+        height="{{ section.settings.image.height }}"
+        loading="eager"
+        fetchpriority="high"
+      >
+      <div class="hero__scrim" aria-hidden="true"></div>
+    </div>
+  {%- else -%}
+    <div class="hero__media">
+      <img
+        class="hero__media-image"
+        src="{{ 'stock/hero-course.jpg' | asset_url }}"
+        alt="{{ section.settings.heading | escape }}"
+        loading="eager"
+        fetchpriority="high"
+      >
+      <div class="hero__scrim" aria-hidden="true"></div>
+    </div>
+    {%- if request.design_mode -%}
+      <div class="hero__placeholder-note">Showing a stock golf-course photo &mdash; upload real trip photography under Section settings &rarr; Background image.</div>
+    {%- endif -%}
+  {%- endif -%}
+
+  <div class="page-width hero__content hero__content--{{ section.settings.content_align }}">
+    {%- if section.settings.eyebrow != blank -%}
+      <span class="hero__eyebrow-row">
+        <span class="hero__eyebrow-rule" aria-hidden="true"></span>
+        <span class="eyebrow hero__eyebrow">{{ section.settings.eyebrow }}</span>
+      </span>
+    {%- endif -%}
+
+    <h1 class="h-display hero__heading">{{ section.settings.heading }} {% if section.settings.heading_accent != blank %}<span class="text-italic-serif">{{ section.settings.heading_accent }}</span>{% endif %}</h1>
+
+    {%- if section.settings.subheading != blank -%}
+      <div class="hero__subheading">{{ section.settings.subheading }}</div>
+    {%- endif -%}
+
+    <div class="hero__actions">
+      {%- if section.settings.primary_button_label != blank -%}
+        <a href="{{ section.settings.primary_button_link | default: '#' }}" class="button button--accent hero__cta">
+          {{ section.settings.primary_button_label }}
+        </a>
+      {%- endif -%}
+      {%- if section.settings.secondary_button_label != blank -%}
+        <a href="{{ section.settings.secondary_button_link | default: '#' }}" class="button button--ghost">
+          <span>{{ section.settings.secondary_button_label }}</span>
+          {% render 'icon', name: 'arrow-right' %}
+        </a>
+      {%- endif -%}
+    </div>
+  </div>
+
+  {%- if section.settings.accent_image != blank -%}
+    <div class="hero__accent" aria-hidden="true">
+      <img
+        src="{{ section.settings.accent_image | image_url: width: 700 }}"
+        srcset="{{ section.settings.accent_image | image_url: width: 400 }} 400w, {{ section.settings.accent_image | image_url: width: 700 }} 700w"
+        sizes="(min-width: 990px) 22vw, 40vw"
+        alt=""
+        width="{{ section.settings.accent_image.width }}"
+        height="{{ section.settings.accent_image.height }}"
+        loading="eager"
+      >
+    </div>
+  {%- elsif section.settings.show_accent_fallback -%}
+    <div class="hero__accent" aria-hidden="true">
+      <img src="{{ 'stock/hero-accent-flag.jpg' | asset_url }}" alt="" loading="eager">
+    </div>
+  {%- endif -%}
+
+  <div class="hero__scroll-cue" aria-hidden="true"><span></span></div>
+</section>
+
+{% stylesheet %}
+  .hero {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    min-height: 100vh;
+    min-height: 100svh;
+    color: var(--color-dark-text);
+    background: var(--color-primary-dark);
+    overflow: hidden;
+  }
+
+  .hero__media {
+    position: absolute;
+    inset: 0;
+  }
+
+  .hero__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .hero__media-image {
+    animation: hero-ken-burns 22s ease-in-out infinite alternate;
+  }
+
+  @keyframes hero-ken-burns {
+    0% { transform: scale(1); }
+    100% { transform: scale(1.08); }
+  }
+
+  .hero__scrim {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(0deg, rgba(9, 18, 12, 0.82) 0%, rgba(9, 18, 12, 0.3) 55%, rgba(9, 18, 12, 0.22) 100%);
+  }
+
+  .hero__content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    align-items: flex-start;
+    max-width: 46rem;
+    padding-block: clamp(3rem, 2.2rem + 3vw, 6rem);
+  }
+
+  .hero__content--center {
+    align-items: center;
+    text-align: center;
+    margin-inline: auto;
+  }
+
+  .hero__eyebrow-row {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .hero__eyebrow-rule {
+    width: 1.5rem;
+    height: 2px;
+    background: var(--color-accent);
+    flex-shrink: 0;
+  }
+
+  .hero__eyebrow {
+    color: var(--color-dark-text-muted);
+  }
+
+  .hero__heading {
+    color: var(--color-dark-text);
+  }
+
+  .hero__heading .text-italic-serif {
+    color: var(--color-accent);
+  }
+
+  .hero__subheading {
+    font-size: 1.1875rem;
+    color: var(--color-dark-text-muted);
+    max-width: 32rem;
+  }
+
+  .hero__actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1.75rem;
+    margin-top: 0.5rem;
+  }
+
+  .hero__cta {
+    padding: 1.05em 2.35em;
+  }
+
+  .hero__placeholder-note {
+    position: absolute;
+    z-index: 2;
+    top: 1rem;
+    left: 1rem;
+    right: 1rem;
+    padding: 0.6rem 0.9rem;
+    background: color-mix(in srgb, var(--color-dark-background) 88%, transparent);
+    color: var(--color-dark-text-muted);
+    border: 1px dashed color-mix(in srgb, var(--color-dark-text) 30%, transparent);
+    font-size: 0.75rem;
+    letter-spacing: 0.02em;
+  }
+
+  .hero__accent {
+    position: absolute;
+    z-index: 1;
+    right: clamp(1.25rem, 4vw, 4rem);
+    bottom: clamp(4.5rem, 8vw, 7rem);
+    width: clamp(9rem, 16vw, 14rem);
+    display: none;
+  }
+
+  .hero__accent img {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.45);
+    border: 6px solid var(--color-background);
+  }
+
+  @media screen and (min-width: 990px) {
+    .hero__accent {
+      display: block;
+    }
+  }
+
+  .hero__scroll-cue {
+    position: absolute;
+    z-index: 1;
+    left: 50%;
+    bottom: 1.75rem;
+    transform: translateX(-50%);
+    width: 1px;
+    height: 2.5rem;
+    background: color-mix(in srgb, var(--color-dark-text) 30%, transparent);
+    overflow: hidden;
+  }
+
+  .hero__scroll-cue span {
+    position: absolute;
+    inset: 0;
+    background: var(--color-dark-text);
+    transform: translateY(-100%);
+    animation: hero-scroll-cue 2.4s ease-in-out infinite;
+  }
+
+  @media screen and (max-width: 749px) {
+    .hero__scroll-cue {
+      display: none;
+    }
+  }
+
+  @keyframes hero-scroll-cue {
+    0% { transform: translateY(-100%); }
+    50% { transform: translateY(0); }
+    100% { transform: translateY(100%); }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Hero",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Background image",
+      "info": "Recommended: 2000x1250px minimum, landscape. Think: sunrise tee times, matching jerseys, bags lined up on the cart path. Shows a bundled stock golf-course photo until you upload one."
+    },
+    {
+      "type": "image_picker",
+      "id": "accent_image",
+      "label": "Layered accent photo (optional)",
+      "info": "A small framed photo layered over the hero on desktop for depth. Leave blank to use the bundled stock fallback (or turn that off below)."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_accent_fallback",
+      "label": "Show bundled stock photo for accent when none is set",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow text",
+      "default": "Juice Golf Trips"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Every Golf Trip"
+    },
+    {
+      "type": "text",
+      "id": "heading_accent",
+      "label": "Heading — accent word(s)",
+      "info": "Rendered in italic accent color at the end of the heading.",
+      "default": "Deserves a Team."
+    },
+    {
+      "type": "richtext",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "<p>Juice Golf Trips helps your group show up ready — custom team apparel, carefully curated trip essentials, and the planning tools that turn a group chat into an annual tradition.</p>"
+    },
+    {
+      "type": "select",
+      "id": "content_align",
+      "label": "Content alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "header",
+      "content": "Buttons"
+    },
+    {
+      "type": "text",
+      "id": "primary_button_label",
+      "label": "Primary button label",
+      "default": "Build Your Team"
+    },
+    {
+      "type": "url",
+      "id": "primary_button_link",
+      "label": "Primary button link"
+    },
+    {
+      "type": "text",
+      "id": "secondary_button_label",
+      "label": "Secondary button label",
+      "default": "Shop Trip Essentials"
+    },
+    {
+      "type": "url",
+      "id": "secondary_button_link",
+      "label": "Secondary button link"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero"
+    }
+  ]
+}
+{% endschema %}

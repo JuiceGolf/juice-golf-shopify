@@ -1,0 +1,151 @@
+<cart-drawer id="CartDrawer">
+  <div class="mobile-nav-overlay" data-drawer-close></div>
+  <div class="mobile-nav-drawer cart-drawer" role="dialog" aria-modal="true" aria-label="{{ 'general.cart.title' | t }}">
+    <div class="mobile-nav-drawer__header">
+      <span class="site-header__logo-text">{{ 'general.cart.title' | t }} ({{ cart.item_count }})</span>
+      <button type="button" class="site-header__icon-button" aria-label="{{ 'general.close' | t }}" data-drawer-close>
+        {% render 'icon', name: 'close' %}
+      </button>
+    </div>
+
+    {%- if cart.item_count == 0 -%}
+      <div class="cart-drawer__empty">
+        <p>{{ 'general.cart.empty' | t }}</p>
+        <a href="{{ routes.all_products_collection_url }}" class="button button--primary">{{ 'general.cart.continue_shopping' | t }}</a>
+      </div>
+    {%- else -%}
+      <form action="{{ routes.cart_url }}" method="post" id="CartDrawerForm" class="cart-drawer__form">
+        <ul class="cart-drawer__items" role="list">
+          {%- for item in cart.items -%}
+            <li class="cart-drawer__item">
+              <a href="{{ item.url }}" class="cart-drawer__item-image">
+                {%- if item.image -%}
+                  <img src="{{ item.image | image_url: width: 200 }}" alt="{{ item.image.alt | escape }}" width="80" height="100" loading="lazy">
+                {%- endif -%}
+              </a>
+              <div class="cart-drawer__item-details">
+                <a href="{{ item.url }}" class="cart-drawer__item-title">{{ item.product.title }}</a>
+                {%- unless item.product.has_only_default_variant -%}
+                  <p class="text-muted cart-drawer__item-variant">{{ item.variant.title }}</p>
+                {%- endunless -%}
+                <p class="cart-drawer__item-price">{{ item.final_price | money }}</p>
+
+                <div class="cart-drawer__item-row">
+                  <input
+                    type="number"
+                    class="cart-qty-input"
+                    name="updates[{{ item.key }}]"
+                    value="{{ item.quantity }}"
+                    min="0"
+                    aria-label="{{ 'general.cart.quantity' | t }} — {{ item.product.title }}"
+                  >
+                  <a href="{{ item.url_to_remove }}" class="link-underline cart-drawer__remove">{{ 'general.cart.remove' | t }}</a>
+                </div>
+              </div>
+            </li>
+          {%- endfor -%}
+        </ul>
+
+        <div class="cart-drawer__footer">
+          {%- if settings.cart_show_shipping_note -%}
+            <p class="text-muted cart-drawer__note">{{ settings.cart_shipping_note }}</p>
+          {%- endif -%}
+
+          <div class="cart-subtotal-row">
+            <span>{{ 'general.cart.subtotal' | t }}</span>
+            <span>{{ cart.total_price | money }}</span>
+          </div>
+
+          <div class="cart-actions-stack">
+            <button type="submit" name="update" class="button button--secondary button--full">Update cart</button>
+            <button type="submit" name="checkout" class="button button--primary button--full">{{ 'general.cart.checkout' | t }}</button>
+          </div>
+        </div>
+      </form>
+    {%- endif -%}
+  </div>
+</cart-drawer>
+
+{% stylesheet %}
+  .cart-drawer {
+    left: auto;
+    right: 0;
+    transform: translateX(100%);
+  }
+
+  cart-drawer[open] .mobile-nav-overlay {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  cart-drawer[open] .cart-drawer {
+    transform: translateX(0);
+  }
+
+  .cart-drawer__empty {
+    padding: 2rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    align-items: flex-start;
+  }
+
+  .cart-drawer__form {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+  }
+
+  .cart-drawer__items {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    padding: 1.25rem;
+    overflow-y: auto;
+    flex: 1;
+  }
+
+  .cart-drawer__item {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 1rem;
+  }
+
+  .cart-drawer__item-image img {
+    border-radius: var(--input-radius);
+    background: var(--color-background-alt);
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+  }
+
+  .cart-drawer__item-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .cart-drawer__item-title {
+    font-weight: 600;
+    font-size: 0.9375rem;
+  }
+
+  .cart-drawer__item-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 0.5rem;
+  }
+
+  .cart-drawer__remove {
+    font-size: 0.8125rem;
+  }
+
+  .cart-drawer__footer {
+    padding: 1.25rem;
+    border-top: 1px solid var(--color-border);
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+  }
+{% endstylesheet %}

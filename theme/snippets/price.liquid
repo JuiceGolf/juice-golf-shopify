@@ -1,0 +1,23 @@
+{%- comment -%}
+  Renders a price block with optional compare-at price.
+  Usage: {% render 'price', product: product %} or {% render 'price', variant: variant %}
+{%- endcomment -%}
+
+{%- liquid
+  assign target = variant | default: product
+  assign compare_at = target.compare_at_price
+  assign price = target.price
+  assign on_sale = false
+  if compare_at > price
+    assign on_sale = true
+  endif
+-%}
+
+<span class="price {% if on_sale %}price--sale{% endif %}">
+  {%- if on_sale -%}
+    <span class="price__sale">{{ price | money }}</span>
+    <span class="price__compare">{{ compare_at | money }}</span>
+  {%- else -%}
+    <span>{{ price | money }}</span>
+  {%- endif -%}
+</span>

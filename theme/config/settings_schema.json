@@ -1,0 +1,365 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "Juice Golf Trips",
+    "theme_version": "0.1.0",
+    "theme_author": "Juice Golf Trips",
+    "theme_documentation_url": "https://juicegolftrips.com",
+    "theme_support_email": "support@juicegolftrips.com"
+  },
+  {
+    "name": "Logo",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "logo",
+        "label": "Logo image"
+      },
+      {
+        "type": "range",
+        "id": "logo_width",
+        "min": 80,
+        "max": 260,
+        "step": 5,
+        "unit": "px",
+        "label": "Logo width (desktop)",
+        "default": 150
+      },
+      {
+        "type": "image_picker",
+        "id": "favicon",
+        "label": "Favicon (square, at least 32x32px)"
+      }
+    ]
+  },
+  {
+    "name": "Colors",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Base"
+      },
+      {
+        "type": "color",
+        "id": "color_background",
+        "label": "Background",
+        "default": "#F6F4EF"
+      },
+      {
+        "type": "color",
+        "id": "color_background_alt",
+        "label": "Alternate section background",
+        "default": "#EDE9DF"
+      },
+      {
+        "type": "color",
+        "id": "color_text",
+        "label": "Text",
+        "default": "#181A17"
+      },
+      {
+        "type": "color",
+        "id": "color_text_muted",
+        "label": "Muted text",
+        "default": "#5B5F56"
+      },
+      {
+        "type": "color",
+        "id": "color_border",
+        "label": "Border",
+        "default": "#DAD5C7"
+      },
+      {
+        "type": "header",
+        "content": "Brand"
+      },
+      {
+        "type": "color",
+        "id": "color_primary",
+        "label": "Primary (deep green)",
+        "default": "#16321F"
+      },
+      {
+        "type": "color",
+        "id": "color_primary_dark",
+        "label": "Primary — dark surface",
+        "default": "#0E2216"
+      },
+      {
+        "type": "color",
+        "id": "color_accent",
+        "label": "Accent (juice)",
+        "default": "#C7D92C"
+      },
+      {
+        "type": "color",
+        "id": "color_accent_text",
+        "label": "Text on accent",
+        "default": "#181A17"
+      },
+      {
+        "type": "header",
+        "content": "Buttons — primary"
+      },
+      {
+        "type": "color",
+        "id": "color_button_primary_bg",
+        "label": "Background",
+        "default": "#16321F"
+      },
+      {
+        "type": "color",
+        "id": "color_button_primary_text",
+        "label": "Text",
+        "default": "#F6F4EF"
+      },
+      {
+        "type": "header",
+        "content": "Buttons — secondary"
+      },
+      {
+        "type": "color",
+        "id": "color_button_secondary_bg",
+        "label": "Background",
+        "default": "#F6F4EF"
+      },
+      {
+        "type": "color",
+        "id": "color_button_secondary_text",
+        "label": "Text",
+        "default": "#16321F"
+      },
+      {
+        "type": "header",
+        "content": "Dark sections"
+      },
+      {
+        "type": "color",
+        "id": "color_dark_background",
+        "label": "Dark section background",
+        "default": "#0E2216"
+      },
+      {
+        "type": "color",
+        "id": "color_dark_text",
+        "label": "Dark section text",
+        "default": "#F6F4EF"
+      },
+      {
+        "type": "color",
+        "id": "color_dark_text_muted",
+        "label": "Dark section muted text",
+        "default": "#A9B3A2"
+      }
+    ]
+  },
+  {
+    "name": "Typography",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Headings"
+      },
+      {
+        "type": "font_picker",
+        "id": "font_heading",
+        "label": "Heading font",
+        "default": "fraunces_n6"
+      },
+      {
+        "type": "range",
+        "id": "font_heading_scale",
+        "min": 90,
+        "max": 130,
+        "step": 5,
+        "unit": "%",
+        "label": "Heading size scale",
+        "default": 100
+      },
+      {
+        "type": "header",
+        "content": "Body"
+      },
+      {
+        "type": "font_picker",
+        "id": "font_body",
+        "label": "Body font",
+        "default": "assistant_n4"
+      },
+      {
+        "type": "range",
+        "id": "font_body_scale",
+        "min": 90,
+        "max": 120,
+        "step": 5,
+        "unit": "%",
+        "label": "Body size scale",
+        "default": 100
+      }
+    ]
+  },
+  {
+    "name": "Layout",
+    "settings": [
+      {
+        "type": "range",
+        "id": "page_width",
+        "min": 1100,
+        "max": 1600,
+        "step": 20,
+        "unit": "px",
+        "label": "Page width",
+        "default": 1360
+      },
+      {
+        "type": "range",
+        "id": "spacing_sections",
+        "min": 0,
+        "max": 120,
+        "step": 4,
+        "unit": "px",
+        "label": "Space between sections",
+        "default": 0
+      },
+      {
+        "type": "range",
+        "id": "grid_gap",
+        "min": 8,
+        "max": 40,
+        "step": 2,
+        "unit": "px",
+        "label": "Grid gap",
+        "default": 24
+      }
+    ]
+  },
+  {
+    "name": "Buttons & inputs",
+    "settings": [
+      {
+        "type": "range",
+        "id": "button_radius",
+        "min": 0,
+        "max": 24,
+        "step": 1,
+        "unit": "px",
+        "label": "Corner radius",
+        "default": 0
+      },
+      {
+        "type": "range",
+        "id": "input_radius",
+        "min": 0,
+        "max": 24,
+        "step": 1,
+        "unit": "px",
+        "label": "Input / card corner radius",
+        "default": 0
+      }
+    ]
+  },
+  {
+    "name": "Product cards",
+    "settings": [
+      {
+        "type": "select",
+        "id": "product_card_image_ratio",
+        "label": "Image ratio",
+        "options": [
+          { "value": "portrait", "label": "Portrait (4:5)" },
+          { "value": "square", "label": "Square (1:1)" }
+        ],
+        "default": "portrait"
+      },
+      {
+        "type": "checkbox",
+        "id": "product_card_show_vendor",
+        "label": "Show vendor",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "product_card_show_secondary_image",
+        "label": "Show second image on hover",
+        "default": true
+      }
+    ]
+  },
+  {
+    "name": "Cart",
+    "settings": [
+      {
+        "type": "select",
+        "id": "cart_type",
+        "label": "Cart behavior",
+        "options": [
+          { "value": "drawer", "label": "Drawer" },
+          { "value": "page", "label": "Page" }
+        ],
+        "default": "drawer"
+      },
+      {
+        "type": "checkbox",
+        "id": "cart_show_shipping_note",
+        "label": "Show shipping note in cart",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "cart_shipping_note",
+        "label": "Shipping note text",
+        "default": "Shipping and taxes calculated at checkout."
+      }
+    ]
+  },
+  {
+    "name": "Social media",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Accounts — leave blank to hide"
+      },
+      {
+        "type": "text",
+        "id": "social_instagram",
+        "label": "Instagram URL"
+      },
+      {
+        "type": "text",
+        "id": "social_facebook",
+        "label": "Facebook URL"
+      },
+      {
+        "type": "text",
+        "id": "social_tiktok",
+        "label": "TikTok URL"
+      },
+      {
+        "type": "text",
+        "id": "social_youtube",
+        "label": "YouTube URL"
+      }
+    ]
+  },
+  {
+    "name": "Juice Golf app",
+    "settings": [
+      {
+        "type": "header",
+        "content": "App store links — placeholders until app is live"
+      },
+      {
+        "type": "text",
+        "id": "juice_golf_ios_url",
+        "label": "App Store URL",
+        "info": "Leave blank to show a \"Coming soon\" state instead of a link."
+      },
+      {
+        "type": "text",
+        "id": "juice_golf_android_url",
+        "label": "Google Play URL",
+        "info": "Leave blank to show a \"Coming soon\" state instead of a link."
+      }
+    ]
+  }
+]

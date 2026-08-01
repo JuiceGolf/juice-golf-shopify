@@ -1,0 +1,124 @@
+{%- liquid
+  assign collection = section.settings.collection
+  assign products_to_show = section.settings.products_to_show | default: 8
+-%}
+
+<section class="section trip-essentials" data-section-id="{{ section.id }}">
+  <div class="page-width">
+    {% render 'section-heading',
+      eyebrow: section.settings.eyebrow,
+      heading: section.settings.heading,
+      subtext: section.settings.subtext,
+      align: 'left',
+      row: true
+    %}
+
+    {%- if collection != blank and collection.products.size > 0 -%}
+      <div class="rail">
+        {%- for product in collection.products limit: products_to_show -%}
+          <div class="rail__item">
+            {% render 'product-card', product: product %}
+          </div>
+        {%- endfor -%}
+      </div>
+
+      {%- if section.settings.button_label != blank -%}
+        <div class="trip-essentials__footer">
+          <a href="{{ collection.url }}" class="link-underline">
+            <span>{{ section.settings.button_label }}</span>
+            {% render 'icon', name: 'arrow-right' %}
+          </a>
+        </div>
+      {%- endif -%}
+    {%- else -%}
+      <div class="rail">
+        {%- for i in (1..4) -%}
+          <div class="rail__item">
+            <div class="trip-essentials__placeholder-card">
+              <div class="media-placeholder">
+                <span class="media-placeholder__label">Product coming soon</span>
+              </div>
+            </div>
+          </div>
+        {%- endfor -%}
+      </div>
+      {%- if request.design_mode -%}
+        <p class="text-muted trip-essentials__editor-note">Select a collection in Section settings to show real products here.</p>
+      {%- endif -%}
+    {%- endif -%}
+  </div>
+</section>
+
+{% stylesheet %}
+  .trip-essentials__footer {
+    margin-top: 2rem;
+    text-align: center;
+  }
+
+  .trip-essentials__placeholder-card {
+    display: flex;
+    flex-direction: column;
+    aspect-ratio: 4 / 5;
+  }
+
+  .trip-essentials__placeholder-card .media-placeholder {
+    flex: 1;
+  }
+
+  .trip-essentials__editor-note {
+    margin-top: 1.25rem;
+    font-size: 0.8125rem;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Trip essentials",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Golf Trip Essentials"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Everything but the Clubs"
+    },
+    {
+      "type": "text",
+      "id": "subtext",
+      "label": "Subtext",
+      "default": "Curated gear for the drive down, the round, and the nineteenth hole."
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection",
+      "info": "Pick the collection to feature — e.g. a curated \"Trip Essentials\" collection."
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "label": "Products to show",
+      "min": 4,
+      "max": 12,
+      "step": 1,
+      "default": 8
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Footer link label",
+      "default": "Shop All Essentials"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Trip essentials"
+    }
+  ]
+}
+{% endschema %}

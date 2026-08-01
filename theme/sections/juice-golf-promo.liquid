@@ -1,0 +1,165 @@
+<section class="section section--dark juice-golf-promo" data-section-id="{{ section.id }}">
+  <div class="page-width juice-golf-promo__grid">
+    <div class="juice-golf-promo__content">
+      <span class="eyebrow" style="color: var(--color-accent);">{{ section.settings.eyebrow }}</span>
+      <h2 class="h1">{{ section.settings.heading }}</h2>
+      <div class="rte text-muted">{{ section.settings.description }}</div>
+
+      {%- if section.blocks.size > 0 -%}
+        <ul class="juice-golf-promo__list">
+          {%- for block in section.blocks -%}
+            <li {{ block.shopify_attributes }}>{% render 'icon', name: 'check' %}<span>{{ block.settings.text }}</span></li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+
+      <div class="juice-golf-promo__stores">
+        {%- if settings.juice_golf_ios_url != blank -%}
+          <a href="{{ settings.juice_golf_ios_url }}" class="button button--outline-light" target="_blank" rel="noopener">Download on the App Store</a>
+        {%- else -%}
+          <span class="button button--outline-light" aria-disabled="true">App Store — Coming Soon</span>
+        {%- endif -%}
+
+        {%- if settings.juice_golf_android_url != blank -%}
+          <a href="{{ settings.juice_golf_android_url }}" class="button button--outline-light" target="_blank" rel="noopener">Get it on Google Play</a>
+        {%- else -%}
+          <span class="button button--outline-light" aria-disabled="true">Google Play — Coming Soon</span>
+        {%- endif -%}
+      </div>
+    </div>
+
+    <div class="juice-golf-promo__media">
+      {%- if section.settings.image != blank -%}
+        <img
+          src="{{ section.settings.image | image_url: width: 1200 }}"
+          alt="{{ section.settings.image.alt | default: 'Juice Golf app' | escape }}"
+          width="{{ section.settings.image.width }}"
+          height="{{ section.settings.image.height }}"
+          loading="lazy"
+        >
+      {%- else -%}
+        <div class="juice-golf-promo__placeholder media-placeholder">
+          <span class="media-placeholder__label">App screenshot coming soon</span>
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .juice-golf-promo__grid {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: clamp(2rem, 1.5rem + 2vw, 4rem);
+    align-items: center;
+  }
+
+  @media screen and (max-width: 749px) {
+    .juice-golf-promo__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .juice-golf-promo__content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .juice-golf-promo__list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    margin: 0.5rem 0;
+  }
+
+  .juice-golf-promo__list li {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.9375rem;
+  }
+
+  .juice-golf-promo__list .icon {
+    width: 1.1rem;
+    height: 1.1rem;
+    color: var(--color-accent);
+    flex-shrink: 0;
+  }
+
+  .juice-golf-promo__stores {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 0.75rem;
+  }
+
+  .juice-golf-promo__stores [aria-disabled="true"] {
+    opacity: 0.5;
+    cursor: default;
+  }
+
+  .juice-golf-promo__media img,
+  .juice-golf-promo__placeholder {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Juice Golf promo",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "App image"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Play with Juice Golf"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "The Trip Doesn't Stop at Checkout."
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description",
+      "default": "<p>Bring your group into the Juice Golf app to build teams, run pairings, keep score, and settle the side games — all trip long.</p>"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Feature",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "Team creation & pairings"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Juice Golf promo",
+      "blocks": [
+        { "type": "feature", "settings": { "text": "Team creation & pairings" } },
+        { "type": "feature", "settings": { "text": "Live scoring & match play" } },
+        { "type": "feature", "settings": { "text": "Side games & standings" } },
+        { "type": "feature", "settings": { "text": "Trip history, saved" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

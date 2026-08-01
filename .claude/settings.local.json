@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(Write-Output \"PWD: $PWD\"; $items = Get-ChildItem -Force -Path .; Write-Output \"Count: $\\($items.Count\\)\"; if \\($items.Count -gt 0\\) { $items | Format-Table Name, Length, LastWriteTime -AutoSize | Out-String -Width 200 })",
+      "PowerShell(New-Item *)",
+      "PowerShell(npx --yes @shopify/cli theme check ./theme 2>&1 | Out-String -Width 200)",
+      "PowerShell(Get-Content *)",
+      "PowerShell(npx --yes @shopify/cli theme check --path ./theme 2>&1 | Out-String -Width 200)",
+      "PowerShell(npx @shopify/cli theme dev --store jgqtsj-wu.myshopify.com --path ./theme)",
+      "PowerShell(Get-Process *)",
+      "PowerShell(Stop-Process *)",
+      "PowerShell(npx @shopify/cli theme check --path ./theme 2>&1 | Out-String -Width 200)",
+      "WebSearch",
+      "WebFetch(domain:unsplash.com)",
+      "PowerShell($env:PATH = [System.Environment]::GetEnvironmentVariable\\(\"PATH\",\"Machine\"\\) + \";\" + [System.Environment]::GetEnvironmentVariable\\(\"PATH\",\"User\"\\); git config --global user.name \"Juice Golf\"; git config --global user.email \"Juicegolfapp@gmail.com\"; git config --global user.name; git config --global user.email)",
+      "PowerShell($env:PATH = [System.Environment]::GetEnvironmentVariable\\(\"PATH\",\"Machine\"\\) + \";\" + [System.Environment]::GetEnvironmentVariable\\(\"PATH\",\"User\"\\); git init -b main; git add .; git status)"
+    ]
+  }
+}

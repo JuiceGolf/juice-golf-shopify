@@ -1,0 +1,45 @@
+<section class="section list-collections" data-section-id="{{ section.id }}">
+  <div class="page-width">
+    <div class="collection__header">
+      <h1 class="h1">{{ section.settings.heading }}</h1>
+    </div>
+
+    <div class="grid grid--3">
+      {%- for collection in collections -%}
+        <a href="{{ collection.url }}" class="collection-card">
+          <div class="collection-card__media">
+            {%- if collection.image -%}
+              <img
+                src="{{ collection.image | image_url: width: 900 }}"
+                alt="{{ collection.image.alt | default: collection.title | escape }}"
+                width="{{ collection.image.width }}"
+                height="{{ collection.image.height }}"
+                loading="lazy"
+              >
+            {%- else -%}
+              <div class="collection-card__placeholder"></div>
+            {%- endif -%}
+          </div>
+          <div class="collection-card__label">
+            <span>{{ collection.title }}</span>
+            {% render 'icon', name: 'arrow-right' %}
+          </div>
+        </a>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "List of collections",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Shop Collections"
+    }
+  ]
+}
+{% endschema %}

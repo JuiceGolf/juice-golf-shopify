@@ -1,0 +1,293 @@
+{%- assign current_variant = product.selected_or_first_available_variant -%}
+
+<section class="section product" data-section-id="{{ section.id }}">
+  <div class="page-width">
+    <nav class="breadcrumbs" aria-label="Breadcrumb">
+      <a href="{{ routes.root_url }}">Home</a>
+      <span>/</span>
+      {%- if product.collections.first -%}
+        <a href="{{ product.collections.first.url }}">{{ product.collections.first.title }}</a>
+        <span>/</span>
+      {%- endif -%}
+      <span>{{ product.title }}</span>
+    </nav>
+
+    <div class="product__grid">
+      <div class="product__gallery" id="ProductGallery">
+        {%- if product.media.size > 0 -%}
+          <div class="product__gallery-main">
+            {%- for media in product.media -%}
+              <div class="product__gallery-slide" data-media-id="{{ media.id }}" {% unless forloop.first %}hidden{% endunless %}>
+                <img
+                  src="{{ media.preview_image | image_url: width: 1200 }}"
+                  srcset="{{ media.preview_image | image_url: width: 600 }} 600w, {{ media.preview_image | image_url: width: 1200 }} 1200w"
+                  sizes="(min-width: 750px) 50vw, 100vw"
+                  alt="{{ media.alt | default: product.title | escape }}"
+                  width="{{ media.preview_image.width }}"
+                  height="{{ media.preview_image.height }}"
+                  loading="eager"
+                >
+              </div>
+            {%- endfor -%}
+          </div>
+          {%- if product.media.size > 1 -%}
+            <div class="product__gallery-thumbs" role="tablist" aria-label="Product images">
+              {%- for media in product.media -%}
+                <button
+                  type="button"
+                  class="product__gallery-thumb {% if forloop.first %}is-active{% endif %}"
+                  data-media-id="{{ media.id }}"
+                  aria-label="Show image {{ forloop.index }}"
+                >
+                  <img
+                    src="{{ media.preview_image | image_url: width: 200 }}"
+                    alt=""
+                    width="80"
+                    height="100"
+                    loading="lazy"
+                  >
+                </button>
+              {%- endfor -%}
+            </div>
+          {%- endif -%}
+        {%- else -%}
+          <div class="product__gallery-placeholder">
+            <span>Product photography coming soon</span>
+          </div>
+        {%- endif -%}
+      </div>
+
+      <div class="product__info">
+        {%- if product.vendor != blank -%}
+          <span class="eyebrow">{{ product.vendor }}</span>
+        {%- endif -%}
+
+        <h1 class="h1 product__title">{{ product.title }}</h1>
+
+        <div class="product__price" id="ProductPrice">
+          {% render 'price', variant: current_variant %}
+        </div>
+
+        {%- if product.description != blank -%}
+          <div class="rte product__description">{{ product.description }}</div>
+        {%- endif -%}
+
+        {%- form 'product', product, id: 'ProductForm', class: 'product-form' -%}
+          <input type="hidden" name="id" value="{{ current_variant.id }}" id="ProductFormVariantId">
+
+          {%- unless product.has_only_default_variant -%}
+            {%- for option in product.options_with_values -%}
+              <div class="field product-form__option" data-option-position="{{ option.position }}">
+                <label class="product-form__option-label" for="ProductSelect-{{ option.position }}">
+                  {{ option.name }}: <span class="product-form__option-value" data-selected-value>{{ option.selected_value }}</span>
+                </label>
+                <select
+                  id="ProductSelect-{{ option.position }}"
+                  class="field__input product-form__select"
+                  name="options[{{ option.name | escape }}]"
+                  data-option-position="{{ option.position }}"
+                >
+                  {%- for value in option.values -%}
+                    <option value="{{ value | escape }}" {% if option.selected_value == value %}selected="selected"{% endif %}>
+                      {{ value }}
+                    </option>
+                  {%- endfor -%}
+                </select>
+              </div>
+            {%- endfor -%}
+          {%- endunless -%}
+
+          <div class="field product-form__quantity">
+            <label for="ProductQuantity">{{ 'products.product.quantity' | t }}</label>
+            <input type="number" id="ProductQuantity" name="quantity" class="field__input" value="1" min="1" style="max-width: 6rem;">
+          </div>
+
+          <button
+            type="submit"
+            id="ProductSubmitButton"
+            class="button button--primary button--full"
+            {% unless current_variant.available %}disabled{% endunless %}
+          >
+            <span data-add-to-cart-text>
+              {%- if current_variant == blank -%}
+                {{ 'products.product.unavailable' | t }}
+              {%- elsif current_variant.available -%}
+                {{ 'products.product.add_to_cart' | t }}
+              {%- else -%}
+                {{ 'products.product.sold_out' | t }}
+              {%- endif -%}
+            </span>
+          </button>
+        {%- endform -%}
+
+        {%- if section.blocks.size > 0 -%}
+          <div class="product__accordions">
+            {%- for block in section.blocks -%}
+              <details class="accordion" {{ block.shopify_attributes }}>
+                <summary class="accordion__summary">
+                  <span>{{ block.settings.heading }}</span>
+                  {% render 'icon', name: 'chevron-down' %}
+                </summary>
+                <div class="rte accordion__content">{{ block.settings.content }}</div>
+              </details>
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+
+    {%- if product.variants.size > 0 -%}
+      <script type="application/json" id="ProductVariantData">
+        {{ product.variants | json }}
+      </script>
+    {%- endif -%}
+  </div>
+</section>
+
+{% stylesheet %}
+  .product__grid {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: clamp(2rem, 1.5rem + 2vw, 4rem);
+    align-items: flex-start;
+  }
+
+  @media screen and (max-width: 749px) {
+    .product__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .product__gallery {
+    position: sticky;
+    top: 6rem;
+  }
+
+  @media screen and (max-width: 749px) {
+    .product__gallery {
+      position: static;
+    }
+  }
+
+  .product__gallery-main {
+    border-radius: var(--input-radius);
+    overflow: hidden;
+    background: var(--color-background-alt);
+  }
+
+  .product__gallery-slide img {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+  }
+
+  .product__gallery-placeholder {
+    aspect-ratio: 4 / 5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background: var(--color-background-alt);
+    color: var(--color-text-muted);
+    border-radius: var(--input-radius);
+    padding: 2rem;
+  }
+
+  .product__gallery-thumbs {
+    display: flex;
+    gap: 0.6rem;
+    margin-top: 0.75rem;
+    overflow-x: auto;
+  }
+
+  .product__gallery-thumb {
+    flex-shrink: 0;
+    width: 4rem;
+    padding: 0;
+    background: none;
+    border: 1px solid transparent;
+    border-radius: var(--input-radius);
+    overflow: hidden;
+  }
+
+  .product__gallery-thumb.is-active {
+    border-color: var(--color-primary);
+  }
+
+  .product__gallery-thumb img {
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+  }
+
+  .product__info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .product__title {
+    margin-top: 0.25rem;
+  }
+
+  .product__price .price {
+    font-size: 1.25rem;
+  }
+
+  .product__description {
+    color: var(--color-text-muted);
+  }
+
+  .product-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    width: 100%;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .product-form__option-label {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .product__accordions {
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Product information",
+  "blocks": [
+    {
+      "type": "accordion",
+      "name": "Accordion",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Sizing & fit"
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Content",
+          "default": "<p>Add sizing and fit details here.</p>"
+        }
+      ]
+    }
+  ],
+  "default": {
+    "blocks": [
+      { "type": "accordion", "settings": { "heading": "Sizing & fit", "content": "<p>Add sizing and fit details here.</p>" } },
+      { "type": "accordion", "settings": { "heading": "Shipping & production", "content": "<p>Custom team apparel goes through design review before production. See the Shipping page for current timelines.</p>" } }
+    ]
+  }
+}
+{% endschema %}

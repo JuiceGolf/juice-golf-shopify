@@ -1,0 +1,48 @@
+{%- if section.blocks.size > 0 -%}
+  <div class="announcement-bar" data-section-id="{{ section.id }}">
+    <div class="page-width">
+      {%- for block in section.blocks -%}
+        <div class="announcement-bar__inner" {{ block.shopify_attributes }}>
+          {%- if block.settings.link -%}
+            <a href="{{ block.settings.link }}">{{ block.settings.text }}</a>
+          {%- else -%}
+            <span>{{ block.settings.text }}</span>
+          {%- endif -%}
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Announcement bar",
+  "max_blocks": 1,
+  "blocks": [
+    {
+      "type": "announcement",
+      "name": "Announcement",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Message",
+          "default": "Free shipping on team orders of 12+ jerseys"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link (optional)"
+        }
+      ]
+    }
+  ],
+  "default": {
+    "blocks": [
+      {
+        "type": "announcement"
+      }
+    ]
+  }
+}
+{% endschema %}

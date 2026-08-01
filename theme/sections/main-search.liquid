@@ -1,0 +1,63 @@
+<section class="section search-results" data-section-id="{{ section.id }}">
+  <div class="page-width">
+    <div class="collection__header">
+      <h1 class="h1">{{ 'general.search.search' | t }}</h1>
+      <form action="{{ routes.search_url }}" method="get" role="search" class="search-results__form">
+        <input type="hidden" name="type" value="product">
+        <div class="field" style="flex: 1;">
+          <input
+            type="search"
+            name="q"
+            class="field__input"
+            value="{{ search.terms | escape }}"
+            placeholder="{{ 'general.search.placeholder' | t }}"
+          >
+        </div>
+        <button type="submit" class="button button--primary">{{ 'general.search.search' | t }}</button>
+      </form>
+    </div>
+
+    {%- if search.performed -%}
+      {%- if search.results_count == 0 -%}
+        <p class="text-muted">{{ 'general.search.no_results' | t: terms: search.terms }}</p>
+      {%- else -%}
+        <p class="text-muted" style="margin-bottom: 1.5rem;">{{ 'general.search.results_count' | t: count: search.results_count }}</p>
+        <div class="collection__grid grid grid--4">
+          {%- for item in search.results -%}
+            {%- if item.object_type == 'product' -%}
+              {% render 'product-card', product: item %}
+            {%- else -%}
+              <a href="{{ item.url }}" class="search-results__other">
+                <span class="eyebrow">{{ item.object_type }}</span>
+                <span>{{ item.title }}</span>
+              </a>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    {%- endif -%}
+  </div>
+</section>
+
+{% stylesheet %}
+  .search-results__form {
+    display: flex;
+    gap: 0.75rem;
+    max-width: 32rem;
+  }
+
+  .search-results__other {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    padding: 1.25rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--input-radius);
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Search results"
+}
+{% endschema %}

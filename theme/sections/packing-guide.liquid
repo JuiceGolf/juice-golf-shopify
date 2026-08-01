@@ -1,0 +1,186 @@
+<section class="section section--alt packing-guide" data-section-id="{{ section.id }}">
+  <div class="page-width packing-guide__grid">
+    <div class="packing-guide__media">
+      {%- if section.settings.image != blank -%}
+        <img
+          src="{{ section.settings.image | image_url: width: 1200 }}"
+          srcset="{{ section.settings.image | image_url: width: 600 }} 600w, {{ section.settings.image | image_url: width: 1200 }} 1200w"
+          sizes="(min-width: 750px) 45vw, 100vw"
+          alt="{{ section.settings.image.alt | default: section.settings.heading | escape }}"
+          width="{{ section.settings.image.width }}"
+          height="{{ section.settings.image.height }}"
+          loading="lazy"
+        >
+      {%- else -%}
+        <img src="{{ 'stock/packing-guide-bag.jpg' | asset_url }}" alt="{{ section.settings.heading | escape }}" loading="lazy">
+        {%- if request.design_mode -%}
+          <span class="packing-guide__stock-note">Stock photo &mdash; add real photography above</span>
+        {%- endif -%}
+      {%- endif -%}
+    </div>
+
+    <div class="packing-guide__content">
+      {% render 'section-heading',
+        eyebrow: section.settings.eyebrow,
+        heading: section.settings.heading,
+        subtext: section.settings.subtext,
+        align: 'left'
+      %}
+
+      <ol class="packing-guide__list">
+        {%- for block in section.blocks -%}
+          <li class="packing-guide__item" {{ block.shopify_attributes }}>
+            <span class="packing-guide__index" aria-hidden="true">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>
+            <div class="packing-guide__item-content">
+              <h3 class="h4">{{ block.settings.heading }}</h3>
+              <p class="text-muted">{{ block.settings.text }}</p>
+            </div>
+          </li>
+        {%- endfor -%}
+      </ol>
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .packing-guide__grid {
+    display: grid;
+    grid-template-columns: 0.85fr 1.15fr;
+    gap: clamp(2rem, 1.5rem + 2vw, 4.5rem);
+    align-items: start;
+  }
+
+  @media screen and (max-width: 749px) {
+    .packing-guide__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .packing-guide__media {
+    position: relative;
+    overflow: hidden;
+    background: var(--color-background-alt);
+  }
+
+  .packing-guide__stock-note {
+    position: absolute;
+    z-index: 1;
+    top: 0.75rem;
+    right: 0.75rem;
+    padding: 0.2em 0.6em;
+    background: color-mix(in srgb, var(--color-dark-background) 80%, transparent);
+    color: var(--color-dark-text);
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  @media screen and (min-width: 990px) {
+    .packing-guide__media {
+      position: sticky;
+      top: 6rem;
+    }
+  }
+
+  .packing-guide__media img,
+  .packing-guide__media .media-placeholder {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+  }
+
+  .packing-guide__list {
+    margin-top: clamp(2rem, 1.6rem + 1.6vw, 3rem);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .packing-guide__item {
+    display: flex;
+    align-items: flex-start;
+    gap: clamp(1rem, 0.7rem + 1.2vw, 2rem);
+    padding-block: clamp(1.5rem, 1.2rem + 1.2vw, 2.25rem);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .packing-guide__index {
+    flex-shrink: 0;
+    min-width: 3.25rem;
+    font-family: var(--font-heading-family);
+    font-weight: 600;
+    line-height: 1;
+    font-size: clamp(2.25rem, 1.9rem + 1.6vw, 3.25rem);
+    color: color-mix(in srgb, var(--color-text) 20%, transparent);
+  }
+
+  .packing-guide__item-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    padding-top: 0.4rem;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Packing guide",
+  "max_blocks": 6,
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image",
+      "info": "Bags lined up, a cart loaded for the day, gear laid out the night before — recommended 1200x1500px minimum."
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "The Ritual"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "The Golf Trip Packing Guide"
+    },
+    {
+      "type": "text",
+      "id": "subtext",
+      "label": "Subtext",
+      "default": "Everything the group needs before the first tee time — packed the same way, every year."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "item",
+      "name": "Item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "The Uniform"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "Matching jerseys, polos, and hats so the group looks like a team before a single shot is hit."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Packing guide",
+      "blocks": [
+        { "type": "item", "settings": { "heading": "The Uniform", "text": "Matching jerseys, polos, and hats so the group looks like a team before a single shot is hit." } },
+        { "type": "item", "settings": { "heading": "The Essentials", "text": "Sunglasses, a good towel, a dry bag for the cart — the stuff you always forget until you need it." } },
+        { "type": "item", "settings": { "heading": "The Roster", "text": "Every player's name, number, and size, handled in one simple list — not twelve group chat threads." } },
+        { "type": "item", "settings": { "heading": "The Keepsake", "text": "Gear built to survive four rounds and get worn again long after the trip is over." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,81 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero",
+      "settings": {}
+    },
+    "shop-by-need": {
+      "type": "shop-by-need",
+      "blocks": {
+        "need-1": { "type": "need", "settings": { "title": "Trip Ready", "subtitle": "Jerseys, polos & team headwear" } },
+        "need-2": { "type": "need", "settings": { "title": "The Course", "subtitle": "Everyday gear for 18 holes" } },
+        "need-3": { "type": "need", "settings": { "title": "The 19th Hole", "subtitle": "For after the round" } },
+        "need-4": { "type": "need", "settings": { "title": "Gifts for the Group", "subtitle": "Accessories & extras" } }
+      },
+      "block_order": ["need-1", "need-2", "need-3", "need-4"],
+      "settings": {}
+    },
+    "trip-essentials": {
+      "type": "trip-essentials",
+      "settings": {}
+    },
+    "team-kit": {
+      "type": "team-kit",
+      "blocks": {
+        "feature-1": { "type": "feature", "settings": { "text": "Team colors & custom logo" } },
+        "feature-2": { "type": "feature", "settings": { "text": "Every player's name & number included" } },
+        "feature-3": { "type": "feature", "settings": { "text": "Sized for the whole roster" } }
+      },
+      "block_order": ["feature-1", "feature-2", "feature-3"],
+      "settings": {}
+    },
+    "packing-guide": {
+      "type": "packing-guide",
+      "blocks": {
+        "item-1": { "type": "item", "settings": { "heading": "The Uniform", "text": "Matching jerseys, polos, and hats so the group looks like a team before a single shot is hit." } },
+        "item-2": { "type": "item", "settings": { "heading": "The Essentials", "text": "Sunglasses, a good towel, a dry bag for the cart — the stuff you always forget until you need it." } },
+        "item-3": { "type": "item", "settings": { "heading": "The Roster", "text": "Every player's name, number, and size, handled in one simple list — not twelve group chat threads." } },
+        "item-4": { "type": "item", "settings": { "heading": "The Keepsake", "text": "Gear built to survive four rounds and get worn again long after the trip is over." } }
+      },
+      "block_order": ["item-1", "item-2", "item-3", "item-4"],
+      "settings": {}
+    },
+    "destination-photography": {
+      "type": "destination-photography",
+      "blocks": {
+        "photo-1": { "type": "photo", "settings": {} },
+        "photo-2": { "type": "photo", "settings": {} },
+        "photo-3": { "type": "photo", "settings": {} },
+        "photo-4": { "type": "photo", "settings": {} },
+        "photo-5": { "type": "photo", "settings": {} }
+      },
+      "block_order": ["photo-1", "photo-2", "photo-3", "photo-4", "photo-5"],
+      "settings": {}
+    },
+    "juice-golf-promo": {
+      "type": "juice-golf-promo",
+      "blocks": {
+        "feature-1": { "type": "feature", "settings": { "text": "Team creation & pairings" } },
+        "feature-2": { "type": "feature", "settings": { "text": "Live scoring & match play" } },
+        "feature-3": { "type": "feature", "settings": { "text": "Side games & standings" } },
+        "feature-4": { "type": "feature", "settings": { "text": "Trip history, saved" } }
+      },
+      "block_order": ["feature-1", "feature-2", "feature-3", "feature-4"],
+      "settings": {}
+    },
+    "newsletter": {
+      "type": "newsletter",
+      "settings": {}
+    }
+  },
+  "order": [
+    "hero",
+    "shop-by-need",
+    "trip-essentials",
+    "team-kit",
+    "packing-guide",
+    "destination-photography",
+    "juice-golf-promo",
+    "newsletter"
+  ]
+}

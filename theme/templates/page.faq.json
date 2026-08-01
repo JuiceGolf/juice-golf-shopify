@@ -1,0 +1,47 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-faq",
+      "blocks": {
+        "q1": {
+          "type": "question",
+          "settings": {
+            "question": "How does the design and ordering process work?",
+            "answer": "<p>Your group's organizer designs the shared team look, builds a roster with each player's name, number, and size, and approves a final preview. After checkout, every order goes through a manual design review before it's sent to production — see the How It Works section on the homepage for the full flow.</p>"
+          }
+        },
+        "q2": {
+          "type": "question",
+          "settings": {
+            "question": "Can I order without a full roster?",
+            "answer": "<p>Yes — single items are available without building a full team roster. Roster-based ordering is for groups who want matching, personalized gear for every player.</p>"
+          }
+        },
+        "q3": {
+          "type": "question",
+          "settings": {
+            "question": "How long does production take?",
+            "answer": "<p>Custom, personalized items go through design review before production, so timelines run longer than a standard order. See the Shipping page for current estimates.</p>"
+          }
+        },
+        "q4": {
+          "type": "question",
+          "settings": {
+            "question": "Can I return or exchange personalized gear?",
+            "answer": "<p>Because items are produced with each player's name and number, personalized pieces are generally final sale except in the case of a production error or defect. See the Returns page for details.</p>"
+          }
+        },
+        "q5": {
+          "type": "question",
+          "settings": {
+            "question": "What is Juice Golf?",
+            "answer": "<p>Juice Golf is a companion app for running the on-course side of your trip — teams, pairings, scoring, match play, side games, and standings. Details are on the homepage and app store links will go live as they're available.</p>"
+          }
+        }
+      },
+      "block_order": ["q1", "q2", "q3", "q4", "q5"],
+      "settings": {}
+    }
+  },
+  "order": ["main"]
+}

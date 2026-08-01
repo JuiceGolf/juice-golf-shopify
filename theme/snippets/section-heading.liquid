@@ -1,0 +1,30 @@
+{%- comment -%}
+  Reusable section heading block.
+  Params:
+    eyebrow (string, optional)
+    heading (string, required)
+    subtext (string, optional, richtext-safe)
+    align ('left' | 'center', default 'left')
+    row (bool) — if true and align is 'left', lays heading + subtext side by side on desktop
+{%- endcomment -%}
+
+{%- liquid
+  assign heading_class = 'section-header'
+  if align == 'center'
+    assign heading_class = heading_class | append: ' section-header--center'
+  elsif row
+    assign heading_class = heading_class | append: ' section-header--row'
+  endif
+-%}
+
+<div class="{{ heading_class }}">
+  <div class="stack" style="gap: 0.85rem;">
+    {%- if eyebrow -%}
+      <span class="eyebrow">{{ eyebrow }}</span>
+    {%- endif -%}
+    <h2 class="h2">{{ heading }}</h2>
+  </div>
+  {%- if subtext -%}
+    <div class="text-muted" style="max-width: 34rem;">{{ subtext }}</div>
+  {%- endif -%}
+</div>

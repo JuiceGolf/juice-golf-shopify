@@ -1,0 +1,256 @@
+<section class="section shop-by-need" data-section-id="{{ section.id }}">
+  <div class="page-width">
+    {% render 'section-heading',
+      eyebrow: section.settings.eyebrow,
+      heading: section.settings.heading,
+      subtext: section.settings.subtext,
+      align: 'left',
+      row: true
+    %}
+
+    <div class="shop-by-need__grid">
+      {%- for block in section.blocks -%}
+        {%- liquid
+          assign col = block.settings.collection
+          assign tile_title = block.settings.title | default: col.title
+          case forloop.index
+            when 1
+              assign stock_fallback = 'stock/need-trip-ready.jpg'
+            when 2
+              assign stock_fallback = 'stock/need-the-course.jpg'
+            when 3
+              assign stock_fallback = 'stock/need-19th-hole.jpg'
+            else
+              assign stock_fallback = 'stock/need-gifts.jpg'
+          endcase
+        -%}
+        <a href="{{ col.url | default: '#' }}" class="shop-by-need__tile" {{ block.shopify_attributes }}>
+          {%- if block.settings.image != blank -%}
+            <img
+              class="shop-by-need__image"
+              src="{{ block.settings.image | image_url: width: 1200 }}"
+              srcset="{{ block.settings.image | image_url: width: 600 }} 600w, {{ block.settings.image | image_url: width: 1200 }} 1200w"
+              sizes="(min-width: 990px) 50vw, 100vw"
+              alt="{{ block.settings.image.alt | default: tile_title | escape }}"
+              width="{{ block.settings.image.width }}"
+              height="{{ block.settings.image.height }}"
+              loading="lazy"
+            >
+          {%- elsif col != blank and col.image -%}
+            <img
+              class="shop-by-need__image"
+              src="{{ col.image | image_url: width: 1200 }}"
+              alt="{{ col.image.alt | default: tile_title | escape }}"
+              width="{{ col.image.width }}"
+              height="{{ col.image.height }}"
+              loading="lazy"
+            >
+          {%- else -%}
+            <img class="shop-by-need__image" src="{{ stock_fallback | asset_url }}" alt="{{ tile_title | escape }}" loading="lazy">
+            {%- if request.design_mode -%}
+              <span class="shop-by-need__stock-note">Stock photo</span>
+            {%- endif -%}
+          {%- endif -%}
+
+          <span class="shop-by-need__scrim" aria-hidden="true"></span>
+
+          <span class="shop-by-need__label">
+            <span class="shop-by-need__title">{{ tile_title }}</span>
+            {%- if block.settings.subtitle != blank -%}
+              <span class="shop-by-need__subtitle">{{ block.settings.subtitle }}</span>
+            {%- endif -%}
+          </span>
+          <span class="shop-by-need__arrow" aria-hidden="true">{% render 'icon', name: 'arrow-right' %}</span>
+        </a>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .shop-by-need__grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(2, minmax(14rem, 1fr));
+    gap: var(--grid-gap);
+  }
+
+  .shop-by-need__tile:nth-child(1) { grid-column: span 2; grid-row: span 2; }
+  .shop-by-need__tile:nth-child(2) { grid-column: span 2; grid-row: span 1; }
+  .shop-by-need__tile:nth-child(3) { grid-column: span 1; grid-row: span 1; }
+  .shop-by-need__tile:nth-child(4) { grid-column: span 1; grid-row: span 1; }
+
+  @media screen and (max-width: 989px) {
+    .shop-by-need__grid {
+      grid-template-columns: repeat(2, 1fr);
+      grid-template-rows: none;
+    }
+
+    .shop-by-need__tile:nth-child(1) { grid-column: span 2; grid-row: auto; aspect-ratio: 16 / 9; }
+    .shop-by-need__tile:nth-child(2) { grid-column: span 2; grid-row: auto; aspect-ratio: 16 / 9; }
+    .shop-by-need__tile:nth-child(3),
+    .shop-by-need__tile:nth-child(4) { grid-column: span 1; grid-row: auto; aspect-ratio: 1 / 1; }
+  }
+
+  @media screen and (max-width: 599px) {
+    .shop-by-need__grid {
+      grid-template-columns: 1fr;
+    }
+
+    .shop-by-need__tile:nth-child(1),
+    .shop-by-need__tile:nth-child(2),
+    .shop-by-need__tile:nth-child(3),
+    .shop-by-need__tile:nth-child(4) {
+      grid-column: span 1;
+      aspect-ratio: 4 / 5;
+    }
+  }
+
+  .shop-by-need__tile {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    background: var(--color-background-alt);
+  }
+
+  .shop-by-need__image,
+  .shop-by-need__tile .media-placeholder {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 700ms cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+
+  .shop-by-need__tile:hover .shop-by-need__image {
+    transform: scale(1.045);
+  }
+
+  .shop-by-need__scrim {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(0deg, rgba(9, 18, 12, 0.72) 0%, rgba(9, 18, 12, 0.08) 45%, transparent 70%);
+  }
+
+  .shop-by-need__stock-note {
+    position: absolute;
+    z-index: 1;
+    top: 0.75rem;
+    right: 0.75rem;
+    padding: 0.2em 0.6em;
+    background: color-mix(in srgb, var(--color-dark-background) 80%, transparent);
+    color: var(--color-dark-text-muted);
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .shop-by-need__label {
+    position: absolute;
+    left: 1.5rem;
+    bottom: 1.5rem;
+    right: 3.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    color: var(--color-dark-text);
+  }
+
+  .shop-by-need__title {
+    font-family: var(--font-heading-family);
+    font-weight: 600;
+    font-size: clamp(1.125rem, 1rem + 0.6vw, 1.5rem);
+    letter-spacing: -0.01em;
+  }
+
+  .shop-by-need__subtitle {
+    font-size: 0.8125rem;
+    color: var(--color-dark-text-muted);
+  }
+
+  .shop-by-need__arrow {
+    position: absolute;
+    right: 1.5rem;
+    bottom: 1.6rem;
+    color: var(--color-dark-text);
+    transition: transform 200ms ease;
+  }
+
+  .shop-by-need__arrow .icon {
+    width: 1.15rem;
+    height: 1.15rem;
+  }
+
+  .shop-by-need__tile:hover .shop-by-need__arrow {
+    transform: translateX(4px);
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Shop by need",
+  "max_blocks": 4,
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Shop by Need"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Whatever the Trip Calls For"
+    },
+    {
+      "type": "text",
+      "id": "subtext",
+      "label": "Subtext",
+      "default": "From matching team gear to the stuff you forget until you're at the airport."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "need",
+      "name": "Need",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title override",
+          "info": "A need-based label reads stronger here than a category name — e.g. \"Trip Ready\" instead of \"Apparel.\""
+        },
+        {
+          "type": "text",
+          "id": "subtitle",
+          "label": "Subtitle (optional)"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image override"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Shop by need",
+      "blocks": [
+        { "type": "need", "settings": { "title": "Trip Ready", "subtitle": "Jerseys, polos & team headwear" } },
+        { "type": "need", "settings": { "title": "The Course", "subtitle": "Everyday gear for 18 holes" } },
+        { "type": "need", "settings": { "title": "The 19th Hole", "subtitle": "For after the round" } },
+        { "type": "need", "settings": { "title": "Gifts for the Group", "subtitle": "Accessories & extras" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

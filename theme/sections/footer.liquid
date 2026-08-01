@@ -1,0 +1,133 @@
+<footer class="site-footer" data-section-id="{{ section.id }}">
+  <div class="page-width site-footer__top">
+    <div class="site-footer__brand">
+      {%- if settings.logo -%}
+        <img
+          src="{{ settings.logo | image_url: width: 300 }}"
+          alt="{{ settings.logo.alt | default: shop.name }}"
+          width="140"
+          height="{{ 140 | divided_by: settings.logo.aspect_ratio | round }}"
+          loading="lazy"
+        >
+      {%- else -%}
+        <span class="site-header__logo-text">{{ shop.name }}</span>
+      {%- endif -%}
+
+      {%- if section.settings.tagline != blank -%}
+        <p class="site-footer__tagline">{{ section.settings.tagline }}</p>
+      {%- endif -%}
+
+      {%- if settings.social_instagram != blank or settings.social_facebook != blank or settings.social_tiktok != blank or settings.social_youtube != blank -%}
+        <div class="site-footer__social">
+          {%- if settings.social_instagram != blank -%}
+            <a href="{{ settings.social_instagram }}" aria-label="Instagram" target="_blank" rel="noopener">{% render 'icon', name: 'instagram' %}</a>
+          {%- endif -%}
+          {%- if settings.social_facebook != blank -%}
+            <a href="{{ settings.social_facebook }}" aria-label="Facebook" target="_blank" rel="noopener">{% render 'icon', name: 'facebook' %}</a>
+          {%- endif -%}
+          {%- if settings.social_tiktok != blank -%}
+            <a href="{{ settings.social_tiktok }}" aria-label="TikTok" target="_blank" rel="noopener">{% render 'icon', name: 'tiktok' %}</a>
+          {%- endif -%}
+          {%- if settings.social_youtube != blank -%}
+            <a href="{{ settings.social_youtube }}" aria-label="YouTube" target="_blank" rel="noopener">{% render 'icon', name: 'youtube' %}</a>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    </div>
+
+    {%- for block in section.blocks -%}
+      {%- if block.type == 'link_list' -%}
+        <div {{ block.shopify_attributes }}>
+          <p class="site-footer__heading">{{ block.settings.heading }}</p>
+          <ul class="site-footer__links">
+            {%- for link in block.settings.menu.links -%}
+              <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+            {%- endfor -%}
+          </ul>
+        </div>
+      {%- endif -%}
+    {%- endfor -%}
+
+    {%- for block in section.blocks -%}
+      {%- if block.type == 'newsletter' -%}
+        <div {{ block.shopify_attributes }}>
+          <p class="site-footer__heading">{{ block.settings.heading }}</p>
+          <p class="site-footer__tagline" style="margin-bottom: 1rem;">{{ block.settings.text }}</p>
+          {% render 'newsletter-form', id: 'FooterNewsletter' %}
+        </div>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+
+  <div class="page-width site-footer__bottom">
+    <span>&copy; {{ 'now' | date: '%Y' }} {{ shop.name }}. All rights reserved.</span>
+
+    <div class="site-footer__legal-links">
+      {%- for policy in shop.policies -%}
+        {%- if policy.body != blank -%}
+          <a href="{{ policy.url }}">{{ policy.title }}</a>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Footer",
+  "settings": [
+    {
+      "type": "text",
+      "id": "tagline",
+      "label": "Tagline",
+      "default": "Plan the trip. Build the teams. Design the gear. Play with Juice Golf."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "link_list",
+      "name": "Menu column",
+      "limit": 3,
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Shop"
+        },
+        {
+          "type": "link_list",
+          "id": "menu",
+          "label": "Menu",
+          "default": "main-menu"
+        }
+      ]
+    },
+    {
+      "type": "newsletter",
+      "name": "Newsletter",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Stay in the loop"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "New drops, team gear ideas, and trip inspiration."
+        }
+      ]
+    }
+  ],
+  "default": {
+    "blocks": [
+      { "type": "link_list" },
+      { "type": "newsletter" }
+    ]
+  }
+}
+{% endschema %}

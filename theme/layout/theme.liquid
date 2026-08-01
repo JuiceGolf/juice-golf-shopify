@@ -1,0 +1,94 @@
+<!doctype html>
+<html class="no-js" lang="{{ request.locale.iso_code }}" dir="{{ settings.text_direction | default: 'ltr' }}">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="{{ settings.color_primary }}">
+
+    <title>
+      {{ page_title }}{% if current_tags %} &ndash; tagged "{{ current_tags | join: ', ' }}"{% endif %}{% if current_page != 1 %} &ndash; Page {{ current_page }}{% endif %}{% unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless %}
+    </title>
+
+    {% if page_description %}
+      <meta name="description" content="{{ page_description | escape }}">
+    {% endif %}
+
+    <link rel="canonical" href="{{ canonical_url }}">
+
+    {% if settings.favicon %}
+      <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 96, height: 96 }}">
+    {% endif %}
+
+    <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
+
+    {%- unless settings.font_heading.system? -%}
+      {{ settings.font_heading | font_url | preload_tag: as: 'font', type: 'font/woff2', crossorigin: 'anonymous' }}
+    {%- endunless -%}
+    {%- unless settings.font_body.system? -%}
+      {{ settings.font_body | font_url | preload_tag: as: 'font', type: 'font/woff2', crossorigin: 'anonymous' }}
+    {%- endunless -%}
+
+    {%- style -%}
+      {{ settings.font_body | font_face: font_display: 'swap' }}
+      {{ settings.font_heading | font_face: font_display: 'swap' }}
+
+      :root {
+        --font-body-family: {{ settings.font_body.family }}, {{ settings.font_body.fallback_families }};
+        --font-body-style: {{ settings.font_body.style }};
+        --font-body-scale: {{ settings.font_body_scale | default: 100 | divided_by: 100.0 }};
+        --font-heading-family: {{ settings.font_heading.family }}, {{ settings.font_heading.fallback_families }};
+        --font-heading-style: {{ settings.font_heading.style }};
+        --font-heading-scale: {{ settings.font_heading_scale | default: 100 | divided_by: 100.0 }};
+
+        --color-background: {{ settings.color_background }};
+        --color-background-alt: {{ settings.color_background_alt }};
+        --color-text: {{ settings.color_text }};
+        --color-text-muted: {{ settings.color_text_muted }};
+        --color-border: {{ settings.color_border }};
+
+        --color-primary: {{ settings.color_primary }};
+        --color-primary-dark: {{ settings.color_primary_dark }};
+        --color-accent: {{ settings.color_accent }};
+        --color-accent-text: {{ settings.color_accent_text }};
+
+        --color-button-primary-bg: {{ settings.color_button_primary_bg }};
+        --color-button-primary-text: {{ settings.color_button_primary_text }};
+        --color-button-secondary-bg: {{ settings.color_button_secondary_bg }};
+        --color-button-secondary-text: {{ settings.color_button_secondary_text }};
+
+        --color-dark-background: {{ settings.color_dark_background }};
+        --color-dark-text: {{ settings.color_dark_text }};
+        --color-dark-text-muted: {{ settings.color_dark_text_muted }};
+
+        --page-width: {{ settings.page_width | default: 1360 }}px;
+        --grid-gap: {{ settings.grid_gap | default: 24 }}px;
+        --section-spacing: {{ settings.spacing_sections | default: 0 }}px;
+
+        --button-radius: {{ settings.button_radius | default: 2 }}px;
+        --input-radius: {{ settings.input_radius | default: 2 }}px;
+      }
+    {%- endstyle -%}
+
+    {{ 'base.css' | asset_url | stylesheet_tag }}
+
+    <script src="{{ 'global.js' | asset_url }}" defer="defer"></script>
+
+    {{ content_for_header }}
+  </head>
+
+  <body class="template-{{ request.page_type }}">
+    <a class="visually-hidden skip-to-content-link" href="#MainContent">
+      {{ 'accessibility.skip_to_content' | t }}
+    </a>
+
+    {%- sections 'header-group' -%}
+
+    <main id="MainContent" class="content-for-layout" role="main" tabindex="-1">
+      {{ content_for_layout }}
+    </main>
+
+    {%- sections 'footer-group' -%}
+
+    {%- section 'cart-drawer' -%}
+  </body>
+</html>

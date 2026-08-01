@@ -1,0 +1,67 @@
+{
+  "general": {
+    "search": {
+      "search": "Search",
+      "placeholder": "Search products",
+      "no_results": "No results found for \"{{ terms }}\"",
+      "results_count": "{{ count }} results"
+    },
+    "cart": {
+      "title": "Cart",
+      "empty": "Your cart is empty",
+      "view_cart": "View cart",
+      "checkout": "Checkout",
+      "subtotal": "Subtotal",
+      "remove": "Remove",
+      "quantity": "Quantity",
+      "continue_shopping": "Continue shopping",
+      "item_added": "Item added to your cart"
+    },
+    "social": {
+      "follow_on": "Follow us on {{ social_media }}"
+    },
+    "newsletter": {
+      "heading": "Stay in the loop",
+      "placeholder": "Email address",
+      "submit": "Sign up",
+      "success": "Thanks — you're on the list.",
+      "error": "Please enter a valid email address."
+    },
+    "404": {
+      "title": "Page not found",
+      "subtext": "The page you're looking for doesn't exist or has moved.",
+      "link": "Back to homepage"
+    },
+    "menu": "Menu",
+    "close": "Close"
+  },
+  "products": {
+    "product": {
+      "sold_out": "Sold out",
+      "add_to_cart": "Add to cart",
+      "unavailable": "Unavailable",
+      "quantity": "Quantity",
+      "choose_options": "Choose options",
+      "view_details": "View details",
+      "sale": "Sale",
+      "new": "New"
+    }
+  },
+  "collections": {
+    "general": {
+      "no_products": "No products found in this collection.",
+      "item_count": {
+        "one": "{{ count }} product",
+        "other": "{{ count }} products"
+      }
+    }
+  },
+  "accessibility": {
+    "skip_to_content": "Skip to content",
+    "close": "Close",
+    "menu": "Menu",
+    "cart_count": "{{ count }} items in cart",
+    "next_slide": "Next",
+    "previous_slide": "Previous"
+  }
+}

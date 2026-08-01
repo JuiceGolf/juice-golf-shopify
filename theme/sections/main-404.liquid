@@ -1,0 +1,29 @@
+<section class="section error-404">
+  <div class="page-width">
+    <div class="error-404__content">
+      <span class="eyebrow">404</span>
+      <h1 class="h1">{{ 'general.404.title' | t }}</h1>
+      <p class="text-muted">{{ 'general.404.subtext' | t }}</p>
+      <a href="{{ routes.root_url }}" class="button button--primary">{{ 'general.404.link' | t }}</a>
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .error-404__content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1rem;
+    max-width: 30rem;
+    margin-inline: auto;
+    padding-block: clamp(3rem, 2.4rem + 2.6vw, 6rem);
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "404"
+}
+{% endschema %}

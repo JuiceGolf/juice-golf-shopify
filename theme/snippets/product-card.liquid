@@ -1,0 +1,54 @@
+{%- comment -%}
+  Renders a product card.
+  Usage: {% render 'product-card', product: product %}
+{%- endcomment -%}
+
+{%- liquid
+  assign media_class = 'product-card__media'
+  if settings.product_card_image_ratio == 'square'
+    assign media_class = media_class | append: ' product-card__media--square'
+  endif
+-%}
+
+<div class="product-card">
+  <a href="{{ product.url }}" class="{{ media_class }}">
+    {%- if product.featured_image -%}
+      <img
+        class="product-card__image product-card__image--front"
+        src="{{ product.featured_image | image_url: width: 700 }}"
+        srcset="{{ product.featured_image | image_url: width: 400 }} 400w, {{ product.featured_image | image_url: width: 700 }} 700w"
+        sizes="(min-width: 990px) 25vw, (min-width: 750px) 33vw, 50vw"
+        alt="{{ product.featured_image.alt | default: product.title | escape }}"
+        width="{{ product.featured_image.width }}"
+        height="{{ product.featured_image.height }}"
+        loading="lazy"
+      >
+      {%- if settings.product_card_show_secondary_image and product.images.size > 1 -%}
+        <img
+          class="product-card__image product-card__image--back"
+          src="{{ product.images[1] | image_url: width: 700 }}"
+          alt=""
+          width="{{ product.images[1].width }}"
+          height="{{ product.images[1].height }}"
+          loading="lazy"
+        >
+      {%- endif -%}
+    {%- else -%}
+      <div class="product-card__placeholder"></div>
+    {%- endif -%}
+
+    {%- if product.available == false -%}
+      <span class="product-card__badge">{{ 'products.product.sold_out' | t }}</span>
+    {%- elsif product.compare_at_price > product.price -%}
+      <span class="product-card__badge product-card__badge--sale">{{ 'products.product.sale' | t }}</span>
+    {%- endif -%}
+  </a>
+
+  <div class="stack" style="gap: 0.35rem;">
+    {%- if settings.product_card_show_vendor and product.vendor != blank -%}
+      <span class="product-card__vendor">{{ product.vendor }}</span>
+    {%- endif -%}
+    <a href="{{ product.url }}" class="product-card__title">{{ product.title }}</a>
+    {% render 'price', product: product %}
+  </div>
+</div>
