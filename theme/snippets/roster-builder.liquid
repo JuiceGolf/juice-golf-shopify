@@ -1,0 +1,48 @@
+{%- comment -%}
+  Renders a team roster builder: multiple personalized players (name, number, size)
+  added to the cart in one submit. Requires the product to have a "Size" option —
+  other option types aren't supported.
+  Usage: {% render 'roster-builder', product: product, name_label: ..., number_label: ..., add_label: ..., submit_label: ... %}
+{%- endcomment -%}
+
+{%- liquid
+  assign size_option = null
+  for option in product.options_with_values
+    if option.name == 'Size'
+      assign size_option = option
+    endif
+  endfor
+-%}
+
+{%- if size_option == null -%}
+  {%- if request.design_mode -%}
+    <p class="text-muted">This product doesn't have a "Size" option, so the roster builder can't be shown here. Add a Size option to the product, or turn off "Enable team roster builder" in this section's settings.</p>
+  {%- endif -%}
+{%- else -%}
+  <roster-builder class="roster-builder" data-product-price="{{ product.price }}">
+    <form action="{{ routes.cart_add_url }}" method="post" class="roster-builder__form" data-roster-form>
+      <div class="roster-builder__rows" data-roster-rows>
+        {%- render 'roster-builder-row', product: product, size_option: size_option, name_label: name_label, number_label: number_label -%}
+      </div>
+
+      <template data-roster-row-template>
+        {%- render 'roster-builder-row', product: product, size_option: size_option, name_label: name_label, number_label: number_label -%}
+      </template>
+
+      <button type="button" class="button button--ghost roster-builder__add" data-roster-add>
+        {% render 'icon', name: 'plus' %}
+        <span>{{ add_label }}</span>
+      </button>
+
+      <div class="roster-builder__footer">
+        <div class="roster-builder__subtotal">
+          <span>Subtotal</span>
+          <span data-roster-subtotal>{{ product.price | money }}</span>
+        </div>
+        <button type="submit" class="button button--primary button--full" data-roster-submit>
+          <span data-roster-submit-text>{{ submit_label }}</span>
+        </button>
+      </div>
+    </form>
+  </roster-builder>
+{%- endif -%}

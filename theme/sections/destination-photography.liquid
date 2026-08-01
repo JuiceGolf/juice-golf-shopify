@@ -20,15 +20,15 @@
         {%- liquid
           case forloop.index
             when 1
-              assign stock_fallback = 'stock/destination-1-mountain.jpg'
+              assign stock_fallback = 'destination-1-mountain.jpg'
             when 2
-              assign stock_fallback = 'stock/destination-2-lake.jpg'
+              assign stock_fallback = 'destination-2-lake.jpg'
             when 3
-              assign stock_fallback = 'stock/destination-3-aerial-lake.jpg'
+              assign stock_fallback = 'destination-3-aerial-lake.jpg'
             when 4
-              assign stock_fallback = 'stock/destination-4-flag-field.jpg'
+              assign stock_fallback = 'destination-4-flag-field.jpg'
             else
-              assign stock_fallback = 'stock/destination-5-flag-water.jpg'
+              assign stock_fallback = 'destination-5-flag-water.jpg'
           endcase
         -%}
         <div class="destination-photography__tile" {{ block.shopify_attributes }}>

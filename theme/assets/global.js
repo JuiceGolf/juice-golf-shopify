@@ -92,6 +92,7 @@
     const form = event.target;
     if (!(form instanceof HTMLFormElement)) return;
     if (!form.action || form.action.indexOf('/cart/add') === -1) return;
+    if (form.hasAttribute('data-roster-form')) return; // handled by initRosterBuilders
 
     event.preventDefault();
 
@@ -144,6 +145,16 @@
   });
 
   /* ----------------------------------------------------------------
+     Shared money formatting (product variant picker + roster builder)
+     ---------------------------------------------------------------- */
+  function formatMoney(cents) {
+    return (cents / 100).toLocaleString(undefined, {
+      style: 'currency',
+      currency: (window.Shopify && window.Shopify.currency && window.Shopify.currency.active) || 'USD',
+    });
+  }
+
+  /* ----------------------------------------------------------------
      Product variant picker
      ---------------------------------------------------------------- */
   function initVariantPickers() {
@@ -180,13 +191,6 @@
         return variants.find((variant) => {
           const options = [variant.option1, variant.option2, variant.option3].filter((o) => o !== null);
           return options.every((value, index) => value === selection[index]);
-        });
-      }
-
-      function formatMoney(cents) {
-        return (cents / 100).toLocaleString(undefined, {
-          style: 'currency',
-          currency: (window.Shopify && window.Shopify.currency && window.Shopify.currency.active) || 'USD',
         });
       }
 
@@ -258,8 +262,146 @@
     });
   }
 
+  /* ----------------------------------------------------------------
+     Team roster builder (multiple personalized players in one submit)
+     ---------------------------------------------------------------- */
+  function initRosterBuilders() {
+    document.querySelectorAll('.roster-builder').forEach((wrapper) => {
+      const form = wrapper.querySelector('[data-roster-form]');
+      const rowsContainer = wrapper.querySelector('[data-roster-rows]');
+      const template = wrapper.querySelector('[data-roster-row-template]');
+      const addButton = wrapper.querySelector('[data-roster-add]');
+      const subtotalEl = wrapper.querySelector('[data-roster-subtotal]');
+      const submitButton = wrapper.querySelector('[data-roster-submit]');
+      const submitText = wrapper.querySelector('[data-roster-submit-text]');
+      if (!form || !rowsContainer || !template) return;
+
+      const basePrice = Number(wrapper.dataset.productPrice) || 0;
+
+      function propertyName(input) {
+        const match = /^properties\[(.+)\]$/.exec(input.name || '');
+        return match ? match[1] : input.name;
+      }
+
+      function rowPrice(row) {
+        const select = row.querySelector('[data-roster-size]');
+        const selected = select && select.options[select.selectedIndex];
+        const price = selected ? Number(selected.dataset.price) : NaN;
+        return Number.isFinite(price) ? price : basePrice;
+      }
+
+      function updateSubtotal() {
+        const rows = Array.from(rowsContainer.querySelectorAll('[data-roster-row]'));
+        const total = rows.reduce((sum, row) => sum + rowPrice(row), 0);
+        if (subtotalEl) subtotalEl.textContent = formatMoney(total);
+      }
+
+      function bindRow(row) {
+        const removeButton = row.querySelector('[data-roster-remove]');
+        if (removeButton) {
+          removeButton.addEventListener('click', () => {
+            if (rowsContainer.querySelectorAll('[data-roster-row]').length <= 1) return;
+            row.remove();
+            updateSubtotal();
+          });
+        }
+        const select = row.querySelector('[data-roster-size]');
+        if (select) select.addEventListener('change', updateSubtotal);
+      }
+
+      rowsContainer.querySelectorAll('[data-roster-row]').forEach(bindRow);
+      updateSubtotal();
+
+      if (addButton) {
+        addButton.addEventListener('click', () => {
+          const fragment = template.content.cloneNode(true);
+          const newRow = fragment.querySelector('[data-roster-row]');
+          rowsContainer.appendChild(fragment);
+          if (newRow) {
+            bindRow(newRow);
+            const nameInput = newRow.querySelector('[data-roster-name]');
+            if (nameInput) nameInput.focus();
+          }
+          updateSubtotal();
+        });
+      }
+
+      form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+
+        const originalSubmitText = submitText ? submitText.textContent : null;
+        const rows = Array.from(rowsContainer.querySelectorAll('[data-roster-row]'));
+        const items = [];
+
+        rows.forEach((row) => {
+          const nameInput = row.querySelector('[data-roster-name]');
+          const numberInput = row.querySelector('[data-roster-number]');
+          const select = row.querySelector('[data-roster-size]');
+          const name = nameInput ? nameInput.value.trim() : '';
+          if (!name) return; // skip empty rows
+
+          const properties = {};
+          if (nameInput) properties[propertyName(nameInput)] = name;
+          if (numberInput && numberInput.value.trim()) {
+            properties[propertyName(numberInput)] = numberInput.value.trim();
+          }
+
+          items.push({ id: select ? Number(select.value) : null, quantity: 1, properties });
+        });
+
+        if (items.length === 0) {
+          if (submitText) submitText.textContent = 'Add at least one player';
+          window.setTimeout(() => {
+            if (submitText && originalSubmitText) submitText.textContent = originalSubmitText;
+          }, 2500);
+          return;
+        }
+
+        if (submitButton) submitButton.disabled = true;
+        if (submitText) submitText.textContent = 'Adding…';
+
+        fetch('/cart/add.js', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify({ items: items }),
+        })
+          .then((res) => res.json())
+          .then((result) => {
+            if (result.status) {
+              throw new Error(result.description || 'Could not add this team to your cart.');
+            }
+            return fetch('/cart.js')
+              .then((res) => res.json())
+              .then((cart) => {
+                updateCartCount(cart.item_count);
+                return refreshCartDrawer();
+              });
+          })
+          .then(() => {
+            const drawer = document.querySelector('cart-drawer');
+            if (drawer && drawer.open) drawer.open();
+          })
+          .catch((error) => {
+            if (submitText) submitText.textContent = 'Something went wrong';
+            window.setTimeout(() => {
+              if (submitText && originalSubmitText) submitText.textContent = originalSubmitText;
+            }, 2500);
+            console.error(error);
+          })
+          .finally(() => {
+            if (submitButton) submitButton.disabled = false;
+            if (submitText && originalSubmitText && submitText.textContent === 'Adding…') {
+              submitText.textContent = originalSubmitText;
+            }
+          });
+      });
+    });
+  }
+
   document.addEventListener('DOMContentLoaded', () => {
     initVariantPickers();
     initGalleries();
+    initRosterBuilders();
   });
 })();

@@ -4,6 +4,10 @@
       "type": "hero",
       "settings": {}
     },
+    "featured-collection": {
+      "type": "featured-collection",
+      "settings": {}
+    },
     "shop-by-need": {
       "type": "shop-by-need",
       "blocks": {
@@ -70,6 +74,7 @@
   },
   "order": [
     "hero",
+    "featured-collection",
     "shop-by-need",
     "trip-essentials",
     "team-kit",

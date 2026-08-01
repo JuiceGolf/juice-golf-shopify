@@ -13,7 +13,27 @@
       "WebSearch",
       "WebFetch(domain:unsplash.com)",
       "PowerShell($env:PATH = [System.Environment]::GetEnvironmentVariable\\(\"PATH\",\"Machine\"\\) + \";\" + [System.Environment]::GetEnvironmentVariable\\(\"PATH\",\"User\"\\); git config --global user.name \"Juice Golf\"; git config --global user.email \"Juicegolfapp@gmail.com\"; git config --global user.name; git config --global user.email)",
-      "PowerShell($env:PATH = [System.Environment]::GetEnvironmentVariable\\(\"PATH\",\"Machine\"\\) + \";\" + [System.Environment]::GetEnvironmentVariable\\(\"PATH\",\"User\"\\); git init -b main; git add .; git status)"
+      "PowerShell($env:PATH = [System.Environment]::GetEnvironmentVariable\\(\"PATH\",\"Machine\"\\) + \";\" + [System.Environment]::GetEnvironmentVariable\\(\"PATH\",\"User\"\\); git init -b main; git add .; git status)",
+      "PowerShell($env:PATH = [System.Environment]::GetEnvironmentVariable\\(\"PATH\",\"Machine\"\\) + \";\" + [System.Environment]::GetEnvironmentVariable\\(\"PATH\",\"User\"\\); git commit -m \"Initial commit: Juice Golf Trips Shopify theme\")",
+      "PowerShell($env:PATH = [System.Environment]::GetEnvironmentVariable\\(\"PATH\",\"Machine\"\\) + \";\" + [System.Environment]::GetEnvironmentVariable\\(\"PATH\",\"User\"\\); gh --version 2>&1 | Out-String)",
+      "PowerShell($env:PATH = [System.Environment]::GetEnvironmentVariable\\(\"PATH\",\"Machine\"\\) + \";\" + [System.Environment]::GetEnvironmentVariable\\(\"PATH\",\"User\"\\); git remote add origin https://github.com/JuiceGolf/juice-golf-shopify.git; git remote -v)",
+      "PowerShell($env:PATH = [System.Environment]::GetEnvironmentVariable\\(\"PATH\",\"Machine\"\\) + \";\" + [System.Environment]::GetEnvironmentVariable\\(\"PATH\",\"User\"\\); git push -u origin main)",
+      "PowerShell($env:PATH = [System.Environment]::GetEnvironmentVariable\\(\"PATH\",\"Machine\"\\) + \";\" + [System.Environment]::GetEnvironmentVariable\\(\"PATH\",\"User\"\\); git config --get credential.helper; git config --system --get credential.helper; echo \"GIT_TERMINAL_PROMPT=$env:GIT_TERMINAL_PROMPT\")",
+      "PowerShell($env:PATH = [System.Environment]::GetEnvironmentVariable\\(\"PATH\",\"Machine\"\\) + \";\" + [System.Environment]::GetEnvironmentVariable\\(\"PATH\",\"User\"\\); $env:GIT_TERMINAL_PROMPT=1; git push -u origin main 2>&1 | Out-String -Width 200)",
+      "PowerShell($env:PATH = [System.Environment]::GetEnvironmentVariable\\(\"PATH\",\"Machine\"\\) + \";\" + [System.Environment]::GetEnvironmentVariable\\(\"PATH\",\"User\"\\); git fetch origin; git log --oneline origin/main -n 5; git status)",
+      "PowerShell($env:PATH = [System.Environment]::GetEnvironmentVariable\\(\"PATH\",\"Machine\"\\) + \";\" + [System.Environment]::GetEnvironmentVariable\\(\"PATH\",\"User\"\\); npx @shopify/cli theme dev --store jgqtsj-wu.myshopify.com --path ./theme)",
+      "Read(//tmp/**)",
+      "Bash(curl -s -L \"http://127.0.0.1:9292/\" -o /tmp/home2.html -w \"HTTP %{http_code}\\\\n\")",
+      "Bash(curl -s -L \"http://127.0.0.1:9292/\" -o /tmp/home3.html -w \"HTTP %{http_code}\\\\n\")",
+      "Bash(grep -v '\\\\.liquid$\\\\|\\\\.json$\\\\|^total\\\\|^d')",
+      "PowerShell(Get-Process node -ErrorAction SilentlyContinue)",
+      "PowerShell(Get-NetTCPConnection -LocalPort 9292 -ErrorAction SilentlyContinue | Select-Object LocalPort, OwningProcess; Get-Process -Id \\(Get-NetTCPConnection -LocalPort 9292 -ErrorAction SilentlyContinue\\).OwningProcess -ErrorAction SilentlyContinue | Select-Object Id, ProcessName, Path, StartTime)",
+      "Bash(npx --yes @shopify/cli theme dev --help)",
+      "Bash(curl -s -L \"http://127.0.0.1:9292/\" -o /tmp/home4.html -w \"HTTP %{http_code}\\\\n\")",
+      "Bash(curl -s -L \"http://127.0.0.1:9292/cart\" -o /tmp/cart.html -w \"cart HTTP %{http_code}\\\\n\")",
+      "Bash(curl -s -L -o /tmp/search.html -w \"search HTTP %{http_code}\\\\n\" \"http://127.0.0.1:9292/search?q=test\")",
+      "Bash(npx --yes @shopify/cli theme check --path ./theme)",
+      "Bash(git add *)"
     ]
   }
 }

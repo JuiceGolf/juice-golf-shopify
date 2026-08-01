@@ -72,53 +72,63 @@
           <div class="rte product__description">{{ product.description }}</div>
         {%- endif -%}
 
-        {%- form 'product', product, id: 'ProductForm', class: 'product-form' -%}
-          <input type="hidden" name="id" value="{{ current_variant.id }}" id="ProductFormVariantId">
+        {%- if section.settings.enable_roster_builder -%}
+          {% render 'roster-builder',
+            product: product,
+            name_label: section.settings.roster_name_label,
+            number_label: section.settings.roster_number_label,
+            add_label: section.settings.roster_add_button_label,
+            submit_label: section.settings.roster_submit_label
+          %}
+        {%- else -%}
+          {%- form 'product', product, id: 'ProductForm', class: 'product-form' -%}
+            <input type="hidden" name="id" value="{{ current_variant.id }}" id="ProductFormVariantId">
 
-          {%- unless product.has_only_default_variant -%}
-            {%- for option in product.options_with_values -%}
-              <div class="field product-form__option" data-option-position="{{ option.position }}">
-                <label class="product-form__option-label" for="ProductSelect-{{ option.position }}">
-                  {{ option.name }}: <span class="product-form__option-value" data-selected-value>{{ option.selected_value }}</span>
-                </label>
-                <select
-                  id="ProductSelect-{{ option.position }}"
-                  class="field__input product-form__select"
-                  name="options[{{ option.name | escape }}]"
-                  data-option-position="{{ option.position }}"
-                >
-                  {%- for value in option.values -%}
-                    <option value="{{ value | escape }}" {% if option.selected_value == value %}selected="selected"{% endif %}>
-                      {{ value }}
-                    </option>
-                  {%- endfor -%}
-                </select>
-              </div>
-            {%- endfor -%}
-          {%- endunless -%}
+            {%- unless product.has_only_default_variant -%}
+              {%- for option in product.options_with_values -%}
+                <div class="field product-form__option" data-option-position="{{ option.position }}">
+                  <label class="product-form__option-label" for="ProductSelect-{{ option.position }}">
+                    {{ option.name }}: <span class="product-form__option-value" data-selected-value>{{ option.selected_value }}</span>
+                  </label>
+                  <select
+                    id="ProductSelect-{{ option.position }}"
+                    class="field__input product-form__select"
+                    name="options[{{ option.name | escape }}]"
+                    data-option-position="{{ option.position }}"
+                  >
+                    {%- for value in option.values -%}
+                      <option value="{{ value | escape }}" {% if option.selected_value == value %}selected="selected"{% endif %}>
+                        {{ value }}
+                      </option>
+                    {%- endfor -%}
+                  </select>
+                </div>
+              {%- endfor -%}
+            {%- endunless -%}
 
-          <div class="field product-form__quantity">
-            <label for="ProductQuantity">{{ 'products.product.quantity' | t }}</label>
-            <input type="number" id="ProductQuantity" name="quantity" class="field__input" value="1" min="1" style="max-width: 6rem;">
-          </div>
+            <div class="field product-form__quantity">
+              <label for="ProductQuantity">{{ 'products.product.quantity' | t }}</label>
+              <input type="number" id="ProductQuantity" name="quantity" class="field__input" value="1" min="1" style="max-width: 6rem;">
+            </div>
 
-          <button
-            type="submit"
-            id="ProductSubmitButton"
-            class="button button--primary button--full"
-            {% unless current_variant.available %}disabled{% endunless %}
-          >
-            <span data-add-to-cart-text>
-              {%- if current_variant == blank -%}
-                {{ 'products.product.unavailable' | t }}
-              {%- elsif current_variant.available -%}
-                {{ 'products.product.add_to_cart' | t }}
-              {%- else -%}
-                {{ 'products.product.sold_out' | t }}
-              {%- endif -%}
-            </span>
-          </button>
-        {%- endform -%}
+            <button
+              type="submit"
+              id="ProductSubmitButton"
+              class="button button--primary button--full"
+              {% unless current_variant.available %}disabled{% endunless %}
+            >
+              <span data-add-to-cart-text>
+                {%- if current_variant == blank -%}
+                  {{ 'products.product.unavailable' | t }}
+                {%- elsif current_variant.available -%}
+                  {{ 'products.product.add_to_cart' | t }}
+                {%- else -%}
+                  {{ 'products.product.sold_out' | t }}
+                {%- endif -%}
+              </span>
+            </button>
+          {%- endform -%}
+        {%- endif -%}
 
         {%- if section.blocks.size > 0 -%}
           <div class="product__accordions">
@@ -258,11 +268,125 @@
     width: 100%;
     margin-top: 0.5rem;
   }
+
+  .roster-builder {
+    display: block;
+    width: 100%;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .roster-builder__form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .roster-builder__rows {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .roster-builder__row {
+    display: grid;
+    grid-template-columns: 1.4fr 0.7fr 0.9fr auto;
+    gap: 0.5rem;
+    align-items: center;
+  }
+
+  @media screen and (max-width: 479px) {
+    .roster-builder__row {
+      grid-template-columns: 1fr 1fr;
+      grid-template-areas: "name name" "number size" "remove remove";
+    }
+
+    .roster-builder__field--name { grid-area: name; }
+    .roster-builder__field--number { grid-area: number; }
+    .roster-builder__field--size { grid-area: size; }
+    .roster-builder__remove { grid-area: remove; justify-self: end; }
+  }
+
+  .roster-builder__remove {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    padding: 0;
+    background: none;
+    border: 1px solid var(--color-border);
+    border-radius: var(--input-radius);
+    color: var(--color-text-muted);
+    flex-shrink: 0;
+  }
+
+  .roster-builder__remove:hover {
+    color: var(--color-text);
+    border-color: var(--color-text-muted);
+  }
+
+  .roster-builder__remove .icon {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .roster-builder__add {
+    align-self: flex-start;
+  }
+
+  .roster-builder__footer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .roster-builder__subtotal {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    font-weight: 600;
+  }
 {% endstylesheet %}
 
 {% schema %}
 {
   "name": "Product information",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "enable_roster_builder",
+      "label": "Enable team roster builder",
+      "info": "Replaces the standard size/quantity form with a roster builder so a customer can add multiple personalized players (name, number, size) to the cart in one go. Requires the product to have a \"Size\" option.",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "roster_name_label",
+      "label": "Roster — name field label",
+      "default": "Player name"
+    },
+    {
+      "type": "text",
+      "id": "roster_number_label",
+      "label": "Roster — number field label",
+      "default": "Number"
+    },
+    {
+      "type": "text",
+      "id": "roster_add_button_label",
+      "label": "Roster — \"add player\" button label",
+      "default": "Add player"
+    },
+    {
+      "type": "text",
+      "id": "roster_submit_label",
+      "label": "Roster — submit button label",
+      "default": "Add whole team to cart"
+    }
+  ],
   "blocks": [
     {
       "type": "accordion",

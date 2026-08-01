@@ -28,6 +28,23 @@
                 {%- unless item.product.has_only_default_variant -%}
                   <p class="text-muted cart-drawer__item-variant">{{ item.variant.title }}</p>
                 {%- endunless -%}
+                {%- if item.properties.size > 0 -%}
+                  <dl class="cart-drawer__item-properties">
+                    {%- for property in item.properties -%}
+                      {%- liquid
+                        assign property_key = property.first
+                        assign property_value = property.last
+                        assign key_prefix = property_key | slice: 0
+                      -%}
+                      {%- if key_prefix != '_' and property_value != blank -%}
+                        <div class="cart-drawer__item-property">
+                          <dt>{{ property_key }}:</dt>
+                          <dd>{{ property_value }}</dd>
+                        </div>
+                      {%- endif -%}
+                    {%- endfor -%}
+                  </dl>
+                {%- endif -%}
                 <p class="cart-drawer__item-price">{{ item.final_price | money }}</p>
 
                 <div class="cart-drawer__item-row">
@@ -128,6 +145,25 @@
   .cart-drawer__item-title {
     font-weight: 600;
     font-size: 0.9375rem;
+  }
+
+  .cart-drawer__item-properties {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    margin: 0;
+  }
+
+  .cart-drawer__item-property {
+    display: flex;
+    gap: 0.35em;
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+  }
+
+  .cart-drawer__item-property dt,
+  .cart-drawer__item-property dd {
+    margin: 0;
   }
 
   .cart-drawer__item-row {

@@ -26,7 +26,7 @@
           loading="lazy"
         >
       {%- else -%}
-        <img src="{{ 'stock/team-kit-course.jpg' | asset_url }}" alt="{{ featured_product.title | default: section.settings.heading | escape }}" loading="lazy">
+        <img src="{{ 'team-kit-course.jpg' | asset_url }}" alt="{{ featured_product.title | default: section.settings.heading | escape }}" loading="lazy">
         {%- if request.design_mode -%}
           <span class="team-kit__stock-note">Stock photo &mdash; add real product/team photography above</span>
         {%- endif -%}

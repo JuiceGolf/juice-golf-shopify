@@ -31,6 +31,23 @@
                     {%- unless item.product.has_only_default_variant -%}
                       <p class="text-muted">{{ item.variant.title }}</p>
                     {%- endunless -%}
+                    {%- if item.properties.size > 0 -%}
+                      <dl class="cart-table__item-properties">
+                        {%- for property in item.properties -%}
+                          {%- liquid
+                            assign property_key = property.first
+                            assign property_value = property.last
+                            assign key_prefix = property_key | slice: 0
+                          -%}
+                          {%- if key_prefix != '_' and property_value != blank -%}
+                            <div class="cart-table__item-property">
+                              <dt>{{ property_key }}:</dt>
+                              <dd>{{ property_value }}</dd>
+                            </div>
+                          {%- endif -%}
+                        {%- endfor -%}
+                      </dl>
+                    {%- endif -%}
                     <a href="{{ item.url_to_remove }}" class="link-underline" style="font-size: 0.8125rem;">{{ 'general.cart.remove' | t }}</a>
                   </div>
                 </td>
@@ -126,6 +143,25 @@
 
   .cart-table__title {
     font-weight: 600;
+  }
+
+  .cart-table__item-properties {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    margin: 0.15rem 0;
+  }
+
+  .cart-table__item-property {
+    display: flex;
+    gap: 0.35em;
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+  }
+
+  .cart-table__item-property dt,
+  .cart-table__item-property dd {
+    margin: 0;
   }
 
   .cart-page__summary {

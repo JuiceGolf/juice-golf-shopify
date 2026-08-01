@@ -15,13 +15,13 @@
           assign tile_title = block.settings.title | default: col.title
           case forloop.index
             when 1
-              assign stock_fallback = 'stock/need-trip-ready.jpg'
+              assign stock_fallback = 'need-trip-ready.jpg'
             when 2
-              assign stock_fallback = 'stock/need-the-course.jpg'
+              assign stock_fallback = 'need-the-course.jpg'
             when 3
-              assign stock_fallback = 'stock/need-19th-hole.jpg'
+              assign stock_fallback = 'need-19th-hole.jpg'
             else
-              assign stock_fallback = 'stock/need-gifts.jpg'
+              assign stock_fallback = 'need-gifts.jpg'
           endcase
         -%}
         <a href="{{ col.url | default: '#' }}" class="shop-by-need__tile" {{ block.shopify_attributes }}>

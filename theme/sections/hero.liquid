@@ -18,7 +18,7 @@
     <div class="hero__media">
       <img
         class="hero__media-image"
-        src="{{ 'stock/hero-course.jpg' | asset_url }}"
+        src="{{ 'hero-course.jpg' | asset_url }}"
         alt="{{ section.settings.heading | escape }}"
         loading="eager"
         fetchpriority="high"
@@ -73,7 +73,7 @@
     </div>
   {%- elsif section.settings.show_accent_fallback -%}
     <div class="hero__accent" aria-hidden="true">
-      <img src="{{ 'stock/hero-accent-flag.jpg' | asset_url }}" alt="" loading="eager">
+      <img src="{{ 'hero-accent-flag.jpg' | asset_url }}" alt="" loading="eager">
     </div>
   {%- endif -%}
 
