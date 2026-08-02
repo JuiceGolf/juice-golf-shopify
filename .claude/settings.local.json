@@ -38,7 +38,10 @@
       "Bash(git push *)",
       "Bash(node --check theme/assets/global.js)",
       "Bash(curl -s -L \"http://127.0.0.1:9292/\" -o /tmp/home5.html -w \"home HTTP %{http_code}\\\\n\")",
-      "Bash(curl -s -L \"http://127.0.0.1:9292/cart\" -o /tmp/cart5.html -w \"cart HTTP %{http_code}\\\\n\")"
+      "Bash(curl -s -L \"http://127.0.0.1:9292/cart\" -o /tmp/cart5.html -w \"cart HTTP %{http_code}\\\\n\")",
+      "Bash(curl -s -L \"http://127.0.0.1:9292/products/test-team-jersey\" -o /tmp/product.html -w \"HTTP %{http_code}\\\\n\")",
+      "Bash(grep -o 'class=\"shirt-designer[^\"]*\"' /tmp/product6.html | sort | uniq -c *)",
+      "Bash(grep -n \"roster-builder\\\\|shirt-designer\\\\|product-form__option-label\" /tmp/product6.html)"
     ]
   }
 }

@@ -11,10 +11,11 @@
   assign size_option = null
   assign color_option = null
   for option in product.options_with_values
-    if option.name == 'Size'
+    assign option_name_lower = option.name | downcase
+    if option_name_lower == 'size'
       assign size_option = option
     endif
-    if option.name == 'Color'
+    if option_name_lower == 'color'
       assign color_option = option
     endif
   endfor

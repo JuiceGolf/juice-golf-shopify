@@ -1,6 +1,6 @@
 {
   "sections": {
-    "main": {
+    "main-design": {
       "type": "main-product",
       "blocks": {
         "accordion-1": {
@@ -25,5 +25,5 @@
       }
     }
   },
-  "order": ["main"]
+  "order": ["main-design"]
 }
