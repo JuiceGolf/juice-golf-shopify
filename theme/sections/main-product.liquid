@@ -1,4 +1,15 @@
-{%- assign current_variant = product.selected_or_first_available_variant -%}
+{%- liquid
+  assign current_variant = product.selected_or_first_available_variant
+  assign gallery_color_option = null
+  if section.settings.enable_roster_builder and section.settings.enable_shirt_design
+    for option in product.options_with_values
+      assign gallery_option_name_lower = option.name | downcase
+      if gallery_option_name_lower == 'color'
+        assign gallery_color_option = option
+      endif
+    endfor
+  endif
+-%}
 
 <section class="section product" data-section-id="{{ section.id }}">
   <div class="page-width">
@@ -50,6 +61,8 @@
               {%- endfor -%}
             </div>
           {%- endif -%}
+        {%- elsif gallery_color_option -%}
+          {% render 'shirt-preview', color: gallery_color_option.values.first %}
         {%- else -%}
           <div class="product__gallery-placeholder">
             <span>Product photography coming soon</span>
@@ -354,42 +367,35 @@
   }
 
   .shirt-designer {
-    display: grid;
-    grid-template-columns: 12rem 1fr;
-    gap: 1.5rem;
-    align-items: start;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
     padding-bottom: 1.25rem;
     margin-bottom: 0.25rem;
     border-bottom: 1px solid var(--color-border);
   }
 
-  @media screen and (max-width: 479px) {
-    .shirt-designer {
-      grid-template-columns: 1fr;
-    }
-  }
-
-  .shirt-designer__preview {
+  .shirt-preview {
     position: relative;
-    aspect-ratio: 200 / 220;
+    aspect-ratio: 4 / 5;
     background: var(--color-background-alt);
     border-radius: var(--input-radius);
     overflow: hidden;
   }
 
-  .shirt-designer__svg {
+  .shirt-preview__svg {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
   }
 
-  .shirt-designer__svg path {
+  .shirt-preview__svg path {
     fill: var(--shirt-color, var(--color-background-alt));
     transition: fill 150ms ease;
   }
 
-  .shirt-designer__logo {
+  .shirt-preview__logo {
     position: absolute;
     top: 32%;
     left: 50%;
@@ -397,12 +403,6 @@
     transform: translateX(-50%);
     object-fit: contain;
     pointer-events: none;
-  }
-
-  .shirt-designer__controls {
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
   }
 
   .shirt-designer__label {

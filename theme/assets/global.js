@@ -296,8 +296,12 @@
       const sizePosition = form.dataset.sizePosition;
       const colorPosition = form.dataset.colorPosition; // undefined when shirt design is off
 
-      /* -- shirt designer (color swatches + logo upload + live preview) -- */
+      /* -- shirt designer (color swatches + logo upload); live preview lives
+         separately in the product gallery, kept in sync via the shared
+         section ancestor since the two aren't nested inside each other -- */
       const designer = wrapper.querySelector('[data-shirt-designer]');
+      const productSection = wrapper.closest('.product') || document;
+      const shirtPreview = productSection.querySelector('[data-shirt-preview]');
       let selectedColor = null;
       let logoFile = null;
       let logoObjectUrl = null;
@@ -307,7 +311,7 @@
         const colorInput = designer.querySelector('[data-shirt-color-input]');
         const colorNameEl = designer.querySelector('[data-shirt-color-name]');
         const logoInput = designer.querySelector('[data-shirt-logo-input]');
-        const logoPreview = designer.querySelector('[data-shirt-logo-preview]');
+        const logoPreview = shirtPreview ? shirtPreview.querySelector('[data-shirt-logo-preview]') : null;
 
         if (swatches.length > 0) selectedColor = swatches[0].dataset.value;
 
@@ -319,7 +323,7 @@
               s.classList.toggle('is-active', active);
               s.setAttribute('aria-checked', String(active));
             });
-            designer.style.setProperty('--shirt-color', selectedColor);
+            if (shirtPreview) shirtPreview.style.setProperty('--shirt-color', selectedColor);
             if (colorInput) colorInput.value = selectedColor;
             if (colorNameEl) colorNameEl.textContent = selectedColor;
             updateSubtotal();

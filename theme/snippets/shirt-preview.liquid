@@ -1,0 +1,15 @@
+{%- comment -%}
+  Live placeholder-art preview: a tinted SVG shirt outline with the uploaded
+  logo overlaid. Rendered in the main product gallery in place of the "coming
+  soon" placeholder when there's no real product photography yet and shirt
+  design is enabled — JS keeps it in sync with the color swatches/logo input
+  in the shirt-designer snippet elsewhere on the page.
+  Params: color (initial color value)
+{%- endcomment -%}
+
+<div class="shirt-preview" data-shirt-preview style="--shirt-color: {{ color | escape }};">
+  <svg class="shirt-preview__svg" viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg">
+    <path d="M55,15 L15,45 L35,80 L35,205 L165,205 L165,80 L185,45 L145,15 L100,55 Z" />
+  </svg>
+  <img class="shirt-preview__logo" data-shirt-logo-preview hidden alt="" width="200" height="200">
+</div>
