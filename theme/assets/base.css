@@ -1093,6 +1093,12 @@ search-drawer[open] .search-drawer__overlay {
   color: var(--color-background);
 }
 
+.icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  flex-shrink: 0;
+}
+
 .icon--flip {
   transform: scaleX(-1);
 }
